@@ -6,8 +6,8 @@ require "pegasus/version"
 Gem::Specification.new do |spec|
   spec.name          = "pegasus"
   spec.version       = Pegasus::VERSION
-  spec.authors       = ["Thomas Pasquier"]
-  spec.email         = ["thomas.francis.pasquier@gmail.com"]
+  spec.authors       = ['Thomas Pasquier', 'Xueyuan "Michael" Han']
+  spec.email         = ["thomas.pasquier@bristol.ac.uk"]
 
   spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
   spec.description   = %q{TODO: Write a longer description or delete this line.}
