@@ -9,6 +9,9 @@ param1 = ARGV[1]
 
 if (instruction == '--version' || instruction == '-v')
   Pegasus.version
-elsif (instruction == '--init')
+elsif (instruction == 'init')
   Pegasus::Init.init param1
+elsif (instruction == 'run')
+  load('./.pegasus')
+  puts "#{SEED}"
 end
