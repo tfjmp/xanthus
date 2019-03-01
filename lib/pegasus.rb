@@ -1,4 +1,5 @@
 require "pegasus/version"
+require "pegasus/init"
 
 module Pegasus
   class Error < StandardError; end
