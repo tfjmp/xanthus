@@ -8,8 +8,13 @@ module Pegasus
     def self.header file
       file.write("# -*- mode: ruby -*-\n")
       file.write("# vi: set ft=ruby\n\n")
-      file.write("NAME = '#{@@name}'\n")
-      file.write("SEED = #{@@r.rand 1_000_000}\n")
+    end
+
+    def self.config file
+      file.write("Pegasus.configure do |config|\n")
+      file.write("\tconfig.name = '#{@@name}'\n")
+      file.write("\tconfig.seed = #{@@r.rand 1_000_000}\n")
+      file.write("end\n")
     end
 
     def self.init name
@@ -20,6 +25,7 @@ module Pegasus
         puts "Creating experiment #{@@name}..."
         File.open('.pegasus', 'w+') do |f|
           self.header f
+          self.config f
         end
       end
     end
