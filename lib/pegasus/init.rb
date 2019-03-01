@@ -11,10 +11,32 @@ module Pegasus
     end
 
     def self.config file
-      file.write("Pegasus.configure do |config|\n")
-      file.write("\tconfig.name = '#{@@name}'\n")
-      file.write("\tconfig.seed = #{@@r.rand 1_000_000}\n")
-      file.write("end\n")
+      script = %Q{
+Pegasus.configure do |config|\n
+  config.name = '#{@@name}'
+  config.seed = #{@@r.rand 1_000_000}
+
+  config.benign_sets = 100
+  config.attack_sets = 20
+
+  config.benign do
+    %q{
+    20.times.collect do
+      'wget '+config.params['url'].sample
+    end
+    }
+  end
+
+  config.attack do
+    %q{
+    20.times.collect do
+      'wget '+config.params['url'].sample
+    end
+    }
+  end
+end
+}
+      file.write(script)
     end
 
     def self.init name
