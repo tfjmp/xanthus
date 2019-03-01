@@ -12,7 +12,7 @@ module Pegasus
 
     def self.config file
       script = %Q{
-Pegasus.configure do |config|\n
+Pegasus.configure do |config|
   config.name = '#{@@name}'
   config.seed = #{@@r.rand 1_000_000}
 
