@@ -13,5 +13,5 @@ elsif (instruction == 'init')
   Pegasus::Init.init param1
 elsif (instruction == 'run')
   load('./.pegasus')
-  puts "#{SEED}"
+  puts "Running experiment #{NAME} with seed: #{SEED}..."
 end
