@@ -16,23 +16,37 @@ Pegasus.configure do |config|
   config.name = '#{@@name}'
   config.seed = #{@@r.rand 1_000_000}
 
-  config.benign_sets = 100
-  config.attack_sets = 20
+  config.benign_sets = 5
+  config.attack_sets = 5
+
+  config.pre do
+    %q{%{
+      mkdir wgets
+      cd wgets
+    }}
+  end
 
   config.benign do
     %q{
-    20.times.collect do
-      'wget '+config.params['url'].sample
+    2.times.collect do
+      'wget http://www.google.com'
     end
     }
   end
 
   config.attack do
     %q{
-    20.times.collect do
-      'wget '+config.params['url'].sample
+    2.times.collect do
+      'wget http://www.google.com'
     end
     }
+  end
+
+  config.post do
+    %q{%{
+      cd ..
+      rm -rf wgets
+    }}
   end
 end
 }
