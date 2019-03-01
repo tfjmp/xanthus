@@ -14,4 +14,6 @@ elsif (instruction == 'init')
 elsif (instruction == 'run')
   load('./.pegasus')
   puts "Running experiment #{NAME} with seed: #{SEED}..."
+  puts BENIGN
+  puts eval('"'+BENIGN+'"')
 end
