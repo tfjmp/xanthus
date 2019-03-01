@@ -3,3 +3,9 @@
 require "pegasus"
 
 puts "Pegasus framework"
+
+instruction = ARGV[0]
+
+if (instruction == '--version' || instruction == '-v')
+  Pegasus.version
+end
