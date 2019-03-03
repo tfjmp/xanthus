@@ -30,6 +30,7 @@ Vagrant.configure(2) do |config|
    vb.cpus = 2
    vb.name = "#{@name}"
   end
+  config.vm.provision "shell", path: "provision.sh"
 end
 }
     end

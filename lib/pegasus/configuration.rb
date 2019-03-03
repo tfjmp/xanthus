@@ -4,38 +4,32 @@ module Pegasus
     attr_accessor :seed
     attr_accessor :params
     attr_accessor :vms
-    attr_accessor :benign_script
-    attr_accessor :attack_script
-    attr_accessor :pre_script
-    attr_accessor :post_script
-    attr_accessor :benign_sets
-    attr_accessor :attack_sets
+    attr_accessor :scripts
+    attr_accessor :jobs
 
     def initialize
       @params = Hash.new
       @vms = Hash.new
+      @scripts = Hash.new
+      @jobs = Hash.new
     end
 
-    def benign
-      @benign_script = yield
-    end
-
-    def attack
-      @attack_script = yield
-    end
-
-    def pre
-      @pre_script = yield
-    end
-
-    def post
-      @post_script = yield
-    end
-
-    def vm
+    def vm name
       vm = VirtualMachine.new
       yield(vm)
-      @vms[vm.name] = vm
+      vm.name = name
+      @vms[name] = vm
+    end
+
+    def script name
+      @scripts[name] = yield
+    end
+
+    def job name
+      v = Job.new
+      yield(v)
+      v.name = name
+      @jobs[name] = v
     end
   end
 
@@ -73,7 +67,9 @@ module Pegasus
     config = Configuration.new
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
-    self.generate_script 'benign', config.benign_script, config.benign_sets, config
-    self.generate_script 'attack', config.attack_script, config.attack_sets, config
+    config.jobs.each do |name,job|
+      puts 'Running job '+name.to_s+'...'
+      job.execute config
+    end
   end
 end
