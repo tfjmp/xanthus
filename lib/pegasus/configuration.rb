@@ -3,6 +3,7 @@ module Pegasus
     attr_accessor :name
     attr_accessor :seed
     attr_accessor :params
+    attr_accessor :vms
     attr_accessor :benign_script
     attr_accessor :attack_script
     attr_accessor :pre_script
@@ -12,6 +13,7 @@ module Pegasus
 
     def initialize
       @params = Hash.new
+      @vms = Hash.new
     end
 
     def benign
@@ -28,6 +30,13 @@ module Pegasus
 
     def post
       @post_script = yield
+    end
+
+    def vm
+      vm = VirtualMachine.new
+      yield(vm)
+      @vms[vm.name] = vm
+      puts @vms
     end
   end
 

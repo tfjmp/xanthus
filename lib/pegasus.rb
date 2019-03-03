@@ -1,5 +1,6 @@
 require "pegasus/version"
 require "pegasus/init"
+require "pegasus/virtual_machine"
 require "pegasus/configuration"
 
 module Pegasus
