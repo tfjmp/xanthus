@@ -68,7 +68,7 @@ module Pegasus
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
     config.jobs.each do |name,job|
-      job.execute config
+      job.execute config, 0
     end
   end
 end
