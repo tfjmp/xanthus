@@ -68,7 +68,6 @@ module Pegasus
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
     config.jobs.each do |name,job|
-      puts 'Running job '+name.to_s+'...'
       job.execute config
     end
   end
