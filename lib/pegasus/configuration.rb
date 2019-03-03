@@ -36,7 +36,6 @@ module Pegasus
       vm = VirtualMachine.new
       yield(vm)
       @vms[vm.name] = vm
-      puts @vms
     end
   end
 
