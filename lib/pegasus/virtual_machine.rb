@@ -4,16 +4,12 @@ module Pegasus
     attr_accessor :box
     attr_accessor :version
     attr_accessor :ip
-    attr_accessor :start_script
-    attr_accessor :stop_script
 
     def initialize
       @name = :default
       @box = 'jhcook/fedora27'
       @version = '4.13.12.300'
       @ip = '192.168.33.8'
-      @start_script = ''
-      @stop_script = ''
     end
 
     def to_vagrant
