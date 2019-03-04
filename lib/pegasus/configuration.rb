@@ -50,5 +50,6 @@ module Pegasus
         job.execute config, i
       end
     end
+    config.github_conf.clean
   end
 end

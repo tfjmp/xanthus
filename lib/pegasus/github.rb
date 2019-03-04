@@ -26,7 +26,7 @@ module Pegasus
         FileUtils.mkdir_p @folder
         system('mv', "../#{content}", "#{@folder}/#{content}")
         system('git', 'add', "#{@folder}/#{content}")
-        system('git', 'commit', '-m', ":horse: Pegasus automated message pushed experiment output: #{@folder}/#{content} :horse:")
+        system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/#{content} :horse:")
       end
     end
 
@@ -35,6 +35,10 @@ module Pegasus
         system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
         system('rm', '-rf', @folder)
       end
+    end
+
+    def clean
+      system('rm', '-rf', 'repo')
     end
   end
 end
