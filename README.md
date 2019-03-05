@@ -51,12 +51,12 @@ there still exist a number of challenges.
     - Other controllable factors may be omitted in the description that may or may not affect the final results of the
     experiment. For example, background activities may have been included in the dataset but was not discussed in detail.
 
-Before we go into any detail about using **Pegasus** for automated, reproducible data generation for security analysis,
-we describe a pipeline in which we create dataset for a *specific* attack in a push-button fashion. **Pegasus** is
+Before we go into any detail about using **Xanthus** for automated, reproducible data generation for security analysis,
+we describe a pipeline in which we create dataset for a *specific* attack in a push-button fashion. **Xanthus** is
 a higher-level abstracted framework that generates such a pipeline for *any* attack that existing or future IDS intend to
 evaluate.
 
-## Primer to Pegasus: A Specific Pipeline
+## Primer to Xanthus: A Specific Pipeline
 
 We introduce a specific pipeline that automates data capture for a particular attack.
 In this pipeline, we deploy virtual machines (VM), set up a virtual environment that recreates the attack scenario,
@@ -128,7 +128,7 @@ We assume this directory would be your working directory.
 
 We write a `Makefile` to run our attack scenario for many times. If you want to run it once only,
 modify this line: `[ $${cnt} -lt 25 ]` to `[ $${cnt} -lt 1 ]` in the `Makefile`.
-(In `Pegasus`, we would be able to configure this easily without actually modifying the code.)
+(In `Xanthus`, we would be able to configure this easily without actually modifying the code.)
 
 If you are running on `Mac`:
 ```
@@ -143,7 +143,7 @@ You would locate the output data file in `data/` directory.
 
 #### Behind the Scenes
 
-This pipeline seems to be very user-friendly. So, one might ask, why do we bother to design and implement `Pegasus`?
+This pipeline seems to be very user-friendly. So, one might ask, why do we bother to design and implement `Xanthus`?
 The truth is, we have done a lot of heavy-lifting for you behind the scenes. Let's take a closer look.
 
 The `Makefile` you run starts the `vagrant` process, which would boot up two virtual machines, one `server` and one
@@ -172,18 +172,18 @@ configure once and reuse many times.
 One can always use a base box and configure the above specifications on-the-fly,
 but it is not guaranteed that the configuration would work in the distant future.
 For example, the link to download an older version of `wget` may expire without notice.
-`Pegasus` allows users to either provide a customized virtual box or configure a base box through provisioning.
-If an online configuration is provided, `Pegasus` would automatically generate a customized box for the user
+`Xanthus` allows users to either provide a customized virtual box or configure a base box through provisioning.
+If an online configuration is provided, `Xanthus` would automatically generate a customized box for the user
 to prevent future re-configuration or possible failure in future configuration.
 
 The `client` machine runs the script in `provision/attack`.
 The user must provide such a script.
 In our case, we automatically generate attack scripts using `wget-attack-script-gen.py`.
-`Pegasus` allows users to provide logic to generate scripts or simply provide scripts to run during the experiment.
+`Xanthus` allows users to provide logic to generate scripts or simply provide scripts to run during the experiment.
 
-## Pegasus
+## Xanthus
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pegasus`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/xanthus`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
 
@@ -192,7 +192,7 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'pegasus'
+gem 'xanthus'
 ```
 
 And then execute:
@@ -201,7 +201,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install pegasus
+    $ gem install xanthus
 
 ### Usage
 
@@ -215,7 +215,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ### Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pegasus.
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/xanthus.
 
 ### License
 

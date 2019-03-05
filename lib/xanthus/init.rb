@@ -140,7 +140,7 @@ end
         end
       end
       puts 'Experiment created.'
-      puts 'Edit #{@@name}/.xanthus to configure your experiment.'
+      puts "Edit #{@@name}/.xanthus to configure your experiment."
       puts 'To run your experiment "xanthus run".'
     end
   end
