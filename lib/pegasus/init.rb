@@ -16,6 +16,7 @@ module Pegasus
 
 Pegasus.configure do |config|
   config.name = '#{@@name}'
+  config.authors = 'John Doe'
   config.description = %q{
 Describe my super experiment.
 

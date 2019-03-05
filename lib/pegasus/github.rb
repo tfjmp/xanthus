@@ -12,12 +12,20 @@ module Pegasus
       @folder = Time.now.strftime("%Y-%m-%d_%H-%M")
     end
 
-    def init
+    def init config
       FileUtils.mkdir_p 'repo'
       Dir.chdir 'repo' do
         system('git', 'init')
         system('git', 'pull', "https://#{@token}@github.com/#{@repo}", 'master')
         FileUtils.mkdir_p @folder
+        Dir.chdir @folder do
+          File.open('README.md', 'w+') do |f|
+            f.write(config.to_readme_md)
+          end
+          system('git', 'add', 'README.md')
+          system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/README.md :horse:")
+          system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
+        end
       end
     end
 

@@ -1,6 +1,7 @@
 module Pegasus
   class Configuration
     attr_accessor :name
+    attr_accessor :authors
     attr_accessor :description
     attr_accessor :seed
     attr_accessor :params
@@ -39,6 +40,20 @@ module Pegasus
       yield(github)
       @github_conf = github
     end
+
+    def to_readme_md
+      %Q{
+# #{@name}
+
+Authors: #{@authors}
+
+Seed: #{@seed}
+
+## Description
+
+#{@description}
+      }
+    end
   end
 
   def self.configure
@@ -46,7 +61,7 @@ module Pegasus
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
     srand config.seed
-    config.github_conf.init unless config.github_conf.nil?
+    config.github_conf.init(config) unless config.github_conf.nil?
     config.jobs.each do |name,job|
       for i in 0..(job.iterations-1) do
         job.execute config, i
