@@ -12,11 +12,18 @@ module Pegasus
       @folder = Time.now.strftime("%Y-%m-%d_%H-%M")
     end
 
+    def lfs
+      system('git', 'lfs', 'install')
+      system('git', 'lfs', 'track', '*.tar.gz')
+      system('git', 'add', '.gitattributes')
+    end
+
     def init config
       FileUtils.mkdir_p 'repo'
       Dir.chdir 'repo' do
         system('git', 'init')
         system('git', 'pull', "https://#{@token}@github.com/#{@repo}", 'master')
+        self.lfs
         FileUtils.mkdir_p @folder
         Dir.chdir @folder do
           File.open('README.md', 'w+') do |f|
