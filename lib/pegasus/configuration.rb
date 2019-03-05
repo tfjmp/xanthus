@@ -45,6 +45,7 @@ module Pegasus
     config = Configuration.new
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
+    srand config.seed
     config.github_conf.init unless config.github_conf.nil?
     config.jobs.each do |name,job|
       for i in 0..(job.iterations-1) do
