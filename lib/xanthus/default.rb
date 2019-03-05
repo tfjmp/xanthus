@@ -11,7 +11,7 @@ sleep 20
 
 SPADE_START = %q{%{
 echo spade | sudo -H -u spade ../SPADE/bin/spade start
-sleep 1
+sleep 20
 }}
 
 SPADE_STOP = %q{%{
