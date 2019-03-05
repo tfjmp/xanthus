@@ -67,6 +67,7 @@ Seed: #{@seed}
         job.execute config, i
       end
     end
+    config.github_conf.tag  unless config.github_conf.nil?
     config.github_conf.clean  unless config.github_conf.nil?
   end
 end

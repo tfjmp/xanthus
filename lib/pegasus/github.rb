@@ -16,22 +16,40 @@ module Pegasus
       system('git', 'lfs', 'install')
       system('git', 'lfs', 'track', '*.tar.gz')
       system('git', 'add', '.gitattributes')
+      system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
+    end
+
+    def pegasus_file
+      script = ''
+      File.readlines('../../.pegasus').each do |line|
+        script += line unless line.include? 'github.token'
+        script += "\t\tgithub.token = 'REMOVED'\n" unless !line.include? 'github.token'
+      end
+      File.open('.pegasus', 'w+') do |f|
+        f.write(script)
+      end
+      system('git', 'add', '.pegasus')
+      system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/.pegasus :horse:")
+      system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
+    end
+
+    def readme_file config
+      File.open('README.md', 'w+') do |f|
+        f.write(config.to_readme_md)
+      end
+      system('git', 'add', 'README.md')
+      system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/README.md :horse:")
+      system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
     end
 
     def init config
-      FileUtils.mkdir_p 'repo'
+      system('git', 'clone', "https://#{@token}@github.com/#{@repo}", 'repo')
       Dir.chdir 'repo' do
-        system('git', 'init')
-        system('git', 'pull', "https://#{@token}@github.com/#{@repo}", 'master')
         self.lfs
         FileUtils.mkdir_p @folder
         Dir.chdir @folder do
-          File.open('README.md', 'w+') do |f|
-            f.write(config.to_readme_md)
-          end
-          system('git', 'add', 'README.md')
-          system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/README.md :horse:")
-          system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
+          self.pegasus_file
+          self.readme_file config
         end
       end
     end
@@ -49,6 +67,13 @@ module Pegasus
       Dir.chdir 'repo' do
         system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
         system('rm', '-rf', @folder)
+      end
+    end
+
+    def tag
+      Dir.chdir 'repo' do
+        system('git', 'tag', '-a', "pegasus-#{@folder}", '-m', '"Pegasus automated dataset generation."')
+        system('git', 'push', '--tags', "https://#{@token}@github.com/#{@repo}")
       end
     end
 
