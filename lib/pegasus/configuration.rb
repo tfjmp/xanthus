@@ -45,12 +45,12 @@ module Pegasus
     config = Configuration.new
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
-    config.github_conf.init
+    config.github_conf.init unless config.github_conf.nil?
     config.jobs.each do |name,job|
       for i in 0..(job.iterations-1) do
         job.execute config, i
       end
     end
-    config.github_conf.clean
+    config.github_conf.clean  unless config.github_conf.nil?
   end
 end

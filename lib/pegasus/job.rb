@@ -95,8 +95,8 @@ module Pegasus
       system('mv', 'tmp', "#{name.to_s}-#{iteration.to_s}")
       system('tar', '-czvf', "#{name.to_s}-#{iteration.to_s}.tar.gz", "#{name.to_s}-#{iteration.to_s}")
       system('rm', '-rf', "#{name.to_s}-#{iteration.to_s}")
-      config.github_conf.add("#{name.to_s}-#{iteration.to_s}.tar.gz")
-      config.github_conf.push
+      config.github_conf.add("#{name.to_s}-#{iteration.to_s}.tar.gz") unless config.github_conf.nil?
+      config.github_conf.push unless config.github_conf.nil?
       puts "Job #{name.to_s}-#{iteration.to_s} done."
     end
   end
