@@ -1,6 +1,7 @@
 module Pegasus
   class Configuration
     attr_accessor :name
+    attr_accessor :description
     attr_accessor :seed
     attr_accessor :params
     attr_accessor :vms
