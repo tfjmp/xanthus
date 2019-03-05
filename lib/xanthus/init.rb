@@ -116,7 +116,7 @@ It is very cool and interesting!
   config.job :attack_spade do |job|
     job.iterations = 2
     job.tasks = {server: [:server], spade: [:pre, :spade_start, :attack, :spade_stop, :post]}
-    job.outputs = {spade: {trace: '/tmp/audit_cmd.avro'}}
+    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
 
   config.github do |github|
