@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module Pegasus
+module Xanthus
   class Init
     @@name
 
@@ -14,7 +14,7 @@ module Pegasus
 # -*- mode: ruby -*-
 # vi: set ft=ruby
 
-Pegasus.configure do |config|
+Xanthus.configure do |config|
   config.name = '#{@@name}'
   config.authors = 'John Doe'
   config.description = %q{
@@ -32,11 +32,11 @@ It is very cool and interesting!
   end
 
   config.script :camflow_start do
-    Pegasus::CAMFLOW_START
+    Xanthus::CAMFLOW_START
   end
 
   config.script :spade_start do
-    Pegasus::SPADE_START
+    Xanthus::SPADE_START
   end
 
   config.script :normal do
@@ -56,11 +56,11 @@ It is very cool and interesting!
   end
 
   config.script :camflow_stop do
-    Pegasus::CAMFLOW_STOP
+    Xanthus::CAMFLOW_STOP
   end
 
   config.script :spade_stop do
-    Pegasus::SPADE_STOP
+    Xanthus::SPADE_STOP
   end
 
   config.script :post do
@@ -134,14 +134,14 @@ end
       FileUtils.mkdir_p @@name
       Dir.chdir @@name do
         puts "Creating experiment #{@@name}..."
-        File.open('.pegasus', 'w+') do |f|
+        File.open('.xanthus', 'w+') do |f|
           self.header f
           self.config f
         end
       end
       puts 'Experiment created.'
-      puts 'Edit #{@@name}/.pegasus to configure your experiment.'
-      puts 'To run your experiment "pegasus run".'
+      puts 'Edit #{@@name}/.xanthus to configure your experiment.'
+      puts 'To run your experiment "xanthus run".'
     end
   end
 end

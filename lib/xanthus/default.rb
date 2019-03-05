@@ -1,4 +1,4 @@
-module Pegasus
+module Xanthus
 CAMFLOW_START = %q{%{
 camflow -a true
 sleep 1

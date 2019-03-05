@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "pegasus/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "pegasus"
+  spec.name          = "xanthus"
   spec.version       = Pegasus::VERSION
   spec.authors       = ['Thomas Pasquier', 'Xueyuan "Michael" Han']
   spec.email         = ["thomas.pasquier@bristol.ac.uk"]
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   # Specify which files should be added to the gem when it is released.
   spec.files         = Dir.glob("{bin,lib}/**/*") + %w(LICENSE README.md)
   spec.bindir        = "bin"
-  spec.executables   = ["pegasus"]
+  spec.executables   = ["xanthus"]
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", ">= 2.0"

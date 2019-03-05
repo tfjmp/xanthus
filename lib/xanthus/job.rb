@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module Pegasus
+module Xanthus
   class Job
     attr_accessor :name
     attr_accessor :iterations

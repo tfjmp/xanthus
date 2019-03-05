@@ -1,4 +1,4 @@
-module Pegasus
+module Xanthus
   class Configuration
     attr_accessor :name
     attr_accessor :authors

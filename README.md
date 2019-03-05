@@ -1,14 +1,14 @@
-# Pegasus: Automated Reproducible Data Generation for Evaluating Intrusion Detection Systems
+# Xanthus: Automated Reproducible Data Generation for Evaluating Intrusion Detection Systems
 
 Fairly evaluating and comparing the efficacy of different intrusion detection systems (IDS) requires that experimental data
 be generated in a similar mechanism and/or shared across these systems.
-The reality, unfortunately, is that there exist few public repositories (e.g., DARPA 1998/1999/2000, KDD Cup99, DARPA TC Engagement 3) 
+The reality, unfortunately, is that there exist few public repositories (e.g., DARPA 1998/1999/2000, KDD Cup99, DARPA TC Engagement 3)
 containing experimental data captured solely for the purpose of security analysis.
 Among those public data repositories, most are outdated because a tremendous amount of manual labor is almost always
-necessary to capture the data (e.g., DARPA TC program involves a number of teams from 
+necessary to capture the data (e.g., DARPA TC program involves a number of teams from
 across the academia and the industry and it spans over many a year).
 Consequently, some newly-developed systems, in order to be able to compare against older systems,
-are evaluated using the data that is a decade or two older than the systems themselves 
+are evaluated using the data that is a decade or two older than the systems themselves
 (and usually and unsurprisingly exhibit good results).
 Given that there is a perpetual arms race between the defenders and the offenders in the realm of cyber security
 and that new cyber-threats are manufactured every day,
@@ -21,15 +21,15 @@ such dataset suffers from the following drawbacks:
 
 - In the cases where the dataset is made public, later systems can but consume only a subset of the dataset for analysis.
 Therefore, if they require e.g., additional features from the dataset in the analysis, they must rerun the experiments
-to capture the data themselves again, instead of simply re-using the available dataset. 
+to capture the data themselves again, instead of simply re-using the available dataset.
 Moreover, some systems publish only pre-processed dataset, which usually eliminates information from the original,
 raw dataset that is not relevant to their analysis, even though such information may be relevant for other systems.
 
-- When raw dataset is made public, it provides later systems with richer information content. 
+- When raw dataset is made public, it provides later systems with richer information content.
 However, the underlying systems that capture the raw dataset (e.g., audit systems) are also constantly evolving,
-generating finer-grained, more accurate information or 
-offering a completely different perspective through which one understands system behavior (e.g., provenance systems). 
-Security systems that take advantage of such advancement in the underlying systems 
+generating finer-grained, more accurate information or
+offering a completely different perspective through which one understands system behavior (e.g., provenance systems).
+Security systems that take advantage of such advancement in the underlying systems
 may very well find even the raw data provided by previous systems insufficient.
 
 - If later systems must resort to reproducing dataset themselves as a result of the reasons listed above,
@@ -38,8 +38,8 @@ Even if we assume that previous systems provide sufficiently detailed descriptio
 (which certainly is not always the case),
 there still exist a number of challenges.
 
-    - The experiment must be conducted using the exact software involved with matching versions. 
-    In many cases, security experts have since identified and patched vulnerabilities in the exploitable software 
+    - The experiment must be conducted using the exact software involved with matching versions.
+    In many cases, security experts have since identified and patched vulnerabilities in the exploitable software
     used in security-related experiments, and thus the software itself usually has been updated to a newer version.
     Downgrading the target software and its dependencies is therefore necessary to reproduce the experiment. This
     sometimes cannot be automatically configured through existing package management systems and requires significant
@@ -50,9 +50,9 @@ there still exist a number of challenges.
 
     - Other controllable factors may be omitted in the description that may or may not affect the final results of the
     experiment. For example, background activities may have been included in the dataset but was not discussed in detail.
-   
+
 Before we go into any detail about using **Pegasus** for automated, reproducible data generation for security analysis,
-we describe a pipeline in which we create dataset for a *specific* attack in a push-button fashion. **Pegasus** is 
+we describe a pipeline in which we create dataset for a *specific* attack in a push-button fashion. **Pegasus** is
 a higher-level abstracted framework that generates such a pipeline for *any* attack that existing or future IDS intend to
 evaluate.
 
@@ -61,12 +61,12 @@ evaluate.
 We introduce a specific pipeline that automates data capture for a particular attack.
 In this pipeline, we deploy virtual machines (VM), set up a virtual environment that recreates the attack scenario,
 and run the attack, while capturing data from a whole-system provenance capture system.
-Code is publicly available online at [GitHub](https://github.com/crimson-unicorn/demo/tree/master/wget). 
+Code is publicly available online at [GitHub](https://github.com/crimson-unicorn/demo/tree/master/wget).
 Please refer to the code while finishing off the rest of this section.
 
 ### Prerequisites
 
-We assume that you understand the following terms and concepts. 
+We assume that you understand the following terms and concepts.
 If not, click on the item that you do not understand to read more about it:
 
 * [Virtual machines](https://en.wikipedia.org/wiki/Virtual_machine)
@@ -79,7 +79,7 @@ and [provisioning](https://www.vagrantup.com/docs/provisioning/index.html)
 You may want to understand the following terms and concepts if you want to fully understand the attack
 that we will describe in the next section:
 
-* [Trojan software](https://en.wikipedia.org/wiki/Advanced_persistent_threat) 
+* [Trojan software](https://en.wikipedia.org/wiki/Advanced_persistent_threat)
 and [reverse shell](https://resources.infosecinstitute.com/icmp-reverse-shell/#gref)
 
 ### A Brief Attack Description
@@ -93,7 +93,7 @@ but the moment the package is installed on the victim machine, it will initiate 
 who is listening for connections and create a reverse shell that allows the attacker to infiltrate into the victim machine.
 
 When the victim machine attempts to download the benign package from the `HTTP` server using `wget`,
-`wget` allows arbitrary remote file upload to the host system. 
+`wget` allows arbitrary remote file upload to the host system.
 Meaning that, instead of fetching the intended benign package, it allows redirection of the `HTTP` server and downloads
 the malicious one.
 The user is unaware of such behavior and install the package through the package manager `dpkg`.
@@ -110,7 +110,7 @@ The installed Trojan software establishes a connection to the attacker and the a
 ### Execution Platform
 
 As expected, `Debian` package can only run on any `Debian`-based operating systems. This particular pipeline is run on
-`Ubuntu 18.04` (both the client and the server). 
+`Ubuntu 18.04` (both the client and the server).
 
 ### The Pipeline
 
@@ -130,7 +130,7 @@ We write a `Makefile` to run our attack scenario for many times. If you want to 
 modify this line: `[ $${cnt} -lt 25 ]` to `[ $${cnt} -lt 1 ]` in the `Makefile`.
 (In `Pegasus`, we would be able to configure this easily without actually modifying the code.)
 
-If you are running on `Mac`: 
+If you are running on `Mac`:
 ```
 make test_mac
 ```
@@ -157,7 +157,7 @@ with [TheFatRat](https://github.com/Screetsec/TheFatRat). You are free to use an
 We also put the benign one in the `HTTP` server to trick the user to download it.
 
 The `client` machine involves more operations.
-First, unlike the `server` machine that simply uses a `Ubuntu 18.04` base operating system 
+First, unlike the `server` machine that simply uses a `Ubuntu 18.04` base operating system
 (as seen in `server.vm.box = "bento/ubuntu-18.04"`),
 the `client` machine uses our customized `VirtualBox` box called `michaelh/ubuncam`.
 This box is built with the following specifications:
@@ -174,10 +174,10 @@ but it is not guaranteed that the configuration would work in the distant future
 For example, the link to download an older version of `wget` may expire without notice.
 `Pegasus` allows users to either provide a customized virtual box or configure a base box through provisioning.
 If an online configuration is provided, `Pegasus` would automatically generate a customized box for the user
-to prevent future re-configuration or possible failure in future configuration. 
+to prevent future re-configuration or possible failure in future configuration.
 
 The `client` machine runs the script in `provision/attack`.
-The user must provide such a script. 
+The user must provide such a script.
 In our case, we automatically generate attack scripts using `wget-attack-script-gen.py`.
 `Pegasus` allows users to provide logic to generate scripts or simply provide scripts to run during the experiment.
 

@@ -1,4 +1,4 @@
-module Pegasus
+module Xanthus
   class VirtualMachine
     attr_accessor :name
     attr_accessor :box

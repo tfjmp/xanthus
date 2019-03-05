@@ -1,23 +1,23 @@
 #!/usr/bin/env ruby
 
-require "pegasus"
+require "xanthus"
 
 instruction = ARGV[0]
 param1 = ARGV[1]
 
 if (instruction == 'version')
-  Pegasus.version
+  Xanthus.version
 elsif (instruction == 'init')
-  Pegasus::Init.init param1
+  Xanthus::Init.init param1
 elsif (instruction == 'run')
-  load('./.pegasus')
+  load('./.xanthus')
 elsif (instruction == 'help')
-  puts 'pegasus version | return version number.'
-  puts 'pegasus depencies | installation instruction for system dependencies.'
-  puts 'pegasus init <project name> | inialise a new project.'
-  puts 'pegasus run | run .pegasus file contained in the current folder.'
+  puts 'xanthus version | return version number.'
+  puts 'xanthus depencies | installation instruction for system dependencies.'
+  puts 'xanthus init <project name> | inialise a new project.'
+  puts 'xanthus run | run .xanthus file contained in the current folder.'
 elsif (instruction == 'dependencies')
-  puts 'You need to install the following software on your system for pegasus to run:'
+  puts 'You need to install the following software on your system for xanthus to run:'
   puts 'git (see https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)'
   puts 'git lfs (see https://help.github.com/en/articles/installing-git-large-file-storage)'
   puts 'virtualbox (see https://www.virtualbox.org/wiki/Downloads)'

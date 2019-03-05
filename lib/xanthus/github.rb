@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module Pegasus
+module Xanthus
   class GitHub
     attr_accessor :repo
     attr_accessor :token
@@ -19,17 +19,17 @@ module Pegasus
       system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
     end
 
-    def pegasus_file
+    def xanthus_file
       script = ''
-      File.readlines('../../.pegasus').each do |line|
+      File.readlines('../../.xanthus').each do |line|
         script += line unless line.include? 'github.token'
         script += "\t\tgithub.token = 'REMOVED'\n" unless !line.include? 'github.token'
       end
-      File.open('.pegasus', 'w+') do |f|
+      File.open('.xanthus', 'w+') do |f|
         f.write(script)
       end
-      system('git', 'add', '.pegasus')
-      system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/.pegasus :horse:")
+      system('git', 'add', '.xanthus')
+      system('git', 'commit', '-m', "[Xanthus] :horse: pushed #{@folder}/.xanthus :horse:")
       system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
     end
 
@@ -38,7 +38,7 @@ module Pegasus
         f.write(config.to_readme_md)
       end
       system('git', 'add', 'README.md')
-      system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/README.md :horse:")
+      system('git', 'commit', '-m', "[Xanthus] :horse: pushed #{@folder}/README.md :horse:")
       system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
     end
 
@@ -48,7 +48,7 @@ module Pegasus
         self.lfs
         FileUtils.mkdir_p @folder
         Dir.chdir @folder do
-          self.pegasus_file
+          self.xanthus_file
           self.readme_file config
         end
       end
@@ -59,7 +59,7 @@ module Pegasus
         FileUtils.mkdir_p @folder
         system('mv', "../#{content}", "#{@folder}/#{content}")
         system('git', 'add', "#{@folder}/#{content}")
-        system('git', 'commit', '-m', "[Pegasus] :horse: pushed #{@folder}/#{content} :horse:")
+        system('git', 'commit', '-m', "[Xanthus] :horse: pushed #{@folder}/#{content} :horse:")
       end
     end
 
@@ -72,7 +72,7 @@ module Pegasus
 
     def tag
       Dir.chdir 'repo' do
-        system('git', 'tag', '-a', "pegasus-#{@folder}", '-m', '"Pegasus automated dataset generation."')
+        system('git', 'tag', '-a', "xanthus-#{@folder}", '-m', '"Xanthus automated dataset generation."')
         system('git', 'push', '--tags', "https://#{@token}@github.com/#{@repo}")
       end
     end
