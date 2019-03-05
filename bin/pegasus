@@ -2,15 +2,24 @@
 
 require "pegasus"
 
-puts "Pegasus framework"
-
 instruction = ARGV[0]
 param1 = ARGV[1]
 
-if (instruction == '--version' || instruction == '-v')
+if (instruction == 'version')
   Pegasus.version
 elsif (instruction == 'init')
   Pegasus::Init.init param1
 elsif (instruction == 'run')
   load('./.pegasus')
+elsif (instruction == 'help')
+  puts 'pegasus version | return version number.'
+  puts 'pegasus depencies | installation instruction for system dependencies.'
+  puts 'pegasus init <project name> | inialise a new project.'
+  puts 'pegasus run | run .pegasus file contained in the current folder.'
+elsif (instruction == 'dependencies')
+  puts 'You need to install the following software on your system for pegasus to run:'
+  puts 'git (see https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)'
+  puts 'git lfs (see https://help.github.com/en/articles/installing-git-large-file-storage)'
+  puts 'virtualbox (see https://www.virtualbox.org/wiki/Downloads)'
+  puts 'vagrant (see https://www.vagrantup.com/docs/installation/)'
 end
