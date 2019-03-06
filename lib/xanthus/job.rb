@@ -47,8 +47,10 @@ module Xanthus
 
       FileUtils.mkdir_p machine.to_s
       Dir.chdir machine.to_s do
-        @inputs[machine].each do |name|
-          system('cp', '-f', "../../#{name}", "#{name}")
+        if !@inputs[machine].nil?
+          @inputs[machine].each do |name|
+            system('cp', '-f', "../../#{name}", "#{name}")
+          end
         end
         FileUtils.mkdir_p 'output'
         puts 'Creating provision files...'
