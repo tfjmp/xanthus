@@ -12,6 +12,7 @@ module Xanthus
       @iterations = 0
       @tasks = Hash.new
       @outputs = Hash.new
+      @inputs = Hash.new
     end
 
     def output_script outputs
