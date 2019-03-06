@@ -42,6 +42,19 @@ module Xanthus
       system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
     end
 
+    def inputs_file config
+      config.jobs.each do |name,job|
+        job.inputs.each do |k, files|
+          files.each do |file|
+            system('cp', '-f', "../../#{file}", "#{file}")
+            system('git', 'add', "#{file}")
+            system('git', 'commit', '-m', "[Xanthus] :horse: pushed #{@folder}/#{file} :horse:")
+            system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
+          end
+        end
+      end
+    end
+
     def init config
       system('git', 'clone', "https://#{@token}@github.com/#{@repo}", 'repo')
       Dir.chdir 'repo' do
@@ -50,6 +63,7 @@ module Xanthus
         Dir.chdir @folder do
           self.xanthus_file
           self.readme_file config
+          self.inputs_file config
         end
       end
     end

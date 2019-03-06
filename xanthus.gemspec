@@ -1,11 +1,11 @@
 #coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "pegasus/version"
+require "xanthus/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "xanthus"
-  spec.version       = Pegasus::VERSION
+  spec.version       = Xanthus::VERSION
   spec.authors       = ['Thomas Pasquier', 'Xueyuan "Michael" Han']
   spec.email         = ["thomas.pasquier@bristol.ac.uk"]
 

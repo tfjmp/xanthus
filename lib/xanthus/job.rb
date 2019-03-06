@@ -6,6 +6,7 @@ module Xanthus
     attr_accessor :iterations
     attr_accessor :tasks
     attr_accessor :outputs
+    attr_accessor :inputs
 
     def initialize
       @iterations = 0
@@ -45,6 +46,9 @@ module Xanthus
 
       FileUtils.mkdir_p machine.to_s
       Dir.chdir machine.to_s do
+        @inputs[machine].each do |name|
+          system('cp', '-f', "../../#{name}", "#{name}")
+        end
         FileUtils.mkdir_p 'output'
         puts 'Creating provision files...'
         File.open('Vagrantfile', 'w+') do |f|
