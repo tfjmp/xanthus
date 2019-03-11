@@ -1,0 +1,84 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'cortana'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple Cortana example to demonstrate Xanthus' compatibility with Metasploit, Armitage, and Cortana.
+
+A standard Kali Linux machine is spawned to simulate an adversarial scenario where an Armitage team server is set up to attack a vulnerable Metasploitable 2 machine.
+The Metasploitable 2 machine can be set up to be monitored by an audit system or a provenance capture system.
+
+Cortana is used to create automated bots that exploit the vulnerability in the Metasploitable 2 machine.
+
+In this simple example, it takes advantage of the FTP vulnerability in the machine and uses the 'vsftpd_234_backdoor' module in Metasploit.
+Once a backdoor is installed, the attacker (Kali Linux) is able to create an reverse shell through the payload and control the Metasploitable 2 machine.
+
+We show that the attack succeeds by printing "whoami" command result of the victim machine to the attacker's console.
+
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  config.seed = 166888230855672536133121644429931067516
+
+  config.script :camflow_start do
+    Xanthus::CAMFLOW_START
+  end
+
+  config.script :spade_start do
+    Xanthus::SPADE_START
+  end
+
+  config.script :camflow_stop do
+    Xanthus::CAMFLOW_STOP
+  end
+
+  config.script :spade_stop do
+    Xanthus::SPADE_STOP
+  end
+
+  config.script :victim do
+    %q{%{
+      sleep 10
+    }}
+  end
+
+  config.script :attacker do
+    %q{%{
+      teamserver 192.168.33.10 password &
+      sleep 60
+      cd /usr/share/armitage
+      java -jar cortana.jar /vagrant/local.prop /vagrant/demo.cna
+    }}
+  end
+
+  config.vm :victim do |vm|
+    vm.box = 'Sliim/metasploitable2'
+    vm.memory = 8192
+    vm.version = '2'
+    vm.ip = '192.168.33.8'
+  end
+
+  config.vm :attacker do |vm|
+    vm.box = 'offensive-security/kali-linux'
+    vm.version = '2018.4.0'
+    vm.ip = '192.168.33.10'
+  end
+
+  config.job :cortana do |job|
+    job.iterations = 1
+    job.tasks = {victim: [:victim], attacker: [:attacker]}
+    job.inputs = {attacker: ['local.prop', 'demo.cna']}
+    # job.outputs = {victim: {trace: '/tmp/audit_cdm.avro'}}
+  end
+
+  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end
