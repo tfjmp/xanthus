@@ -9,7 +9,9 @@ Xanthus.configure do |config|
   config.name = 'cortana'
   config.authors = 'Xueyuan Michael Han'
   config.description = %q{
-A simple Cortana example to demonstrate Xanthus' compatibility with Metasploit, Armitage, and Cortana.
+A simple Cortana example to demonstrate:
+
+* Xanthus' compatibility with Metasploit, Armitage, and Cortana
 
 A standard Kali Linux machine is spawned to simulate an adversarial scenario where an Armitage team server is set up to attack a vulnerable Metasploitable 2 machine.
 The Metasploitable 2 machine can be set up to be monitored by an audit system or a provenance capture system.
@@ -47,6 +49,7 @@ Everything is done automatically through scripts for reproducility with minimum 
     }}
   end
 
+  # Run Metasploit, Armitage team server, and Cortana
   config.script :attacker do
     %q{%{
       teamserver 192.168.33.10 password &
@@ -73,7 +76,6 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.iterations = 1
     job.tasks = {victim: [:victim], attacker: [:attacker]}
     job.inputs = {attacker: ['local.prop', 'demo.cna']}
-    # job.outputs = {victim: {trace: '/tmp/audit_cdm.avro'}}
   end
 
   # Uncomment the following code and provide GitHub credentials to push the results to GitHub
