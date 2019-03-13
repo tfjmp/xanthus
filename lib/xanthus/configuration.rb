@@ -61,6 +61,9 @@ Seed: #{@seed}
     yield(config)
     puts "Running experiment #{config.name} with seed #{config.seed}."
     srand config.seed
+    config.vms.each do |k, v|
+      v.generate_box config
+    end
     config.github_conf.init(config) unless config.github_conf.nil?
     config.jobs.each do |name,job|
       for i in 0..(job.iterations-1) do

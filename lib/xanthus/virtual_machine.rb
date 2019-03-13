@@ -8,6 +8,7 @@ module Xanthus
     attr_accessor :memory
     attr_accessor :ip
     attr_accessor :gui
+    attr_accessor :boxing
 
     def initialize
       @name = :default
@@ -18,6 +19,7 @@ module Xanthus
       @cpus = 2
       @cpu_cap = 70
       @gui = false
+      @boxing = nil
     end
 
     def to_vagrant
@@ -37,6 +39,46 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", path: "provision.sh"
 end
 }
+    end
+
+    def generate_box config
+      return unless !boxing.nil?
+      puts 'Generating box...'
+
+      FileUtils.mkdir_p 'boxing'
+      Dir.chdir 'boxing' do
+        File.open('Vagrantfile', 'w+') do |f|
+          f.write(self.to_vagrant)
+        end
+
+        script = ''
+        boxing.each do |t|
+          v = eval(config.scripts[t])
+          if v.kind_of?(Array)
+            v.each do |w|
+              script+=w+"\n"
+            end
+          else
+            script+=v
+          end
+        end
+
+        script_to_clean = script
+        script = ''
+        script_to_clean.each_line do |s|
+          script += s.strip + "\n" unless s=="\n"
+        end
+        script = script.gsub "\n\n", "\n"
+
+        File.open('provision.sh', 'w+') do |f|
+          f.write(script)
+        end
+
+        system('vagrant', 'up')
+        system('vagrant', 'halt')
+        system('vagrant', 'package', '--output', "#{name}.box")
+        puts "#{name}.box created."
+      end
     end
   end
 end
