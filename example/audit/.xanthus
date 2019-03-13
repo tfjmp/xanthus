@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'audit'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple Audit example to demonstrate:
+
+* Xanthus' compatibility with Linux Auditd, a tool for security auditing on Linux
+
+A simple Ubuntu Linux server (bento/ubuntu-18.04) machine is spawned to run Auditd, a userspace component to the Linux Auditing System.
+We install Auditd to the system and ask the audit system to watch a file (/etc/passwd) and a directory (/vagrant).
+
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  config.seed = 277687728604917764954684617893357506141
+
+  # Install Auditd in the system
+  config.script :pre do
+    %q{%{
+      sudo apt-get install -y auditd
+    }}
+  end
+
+  # Configure Auditd rules
+  # We will watch /etc/passwd file for all permission access type and we will also watch any access to the folder /vagrant
+  config.script :auditd_config do
+    %q{%{
+      sudo auditctl -w /etc/passwd -p rwxa
+      sudo auditctl -w /vagrant/
+    }}
+  end
+
+  config.script :normal do
+    %q{%{
+      cat /etc/passwd
+      cd /vagrant
+      touch delete_me.txt
+      rm delete_me.txt
+    }}
+  end
+
+  config.script :post do
+    %q{%{
+      sudo ausearch -f /etc/passwd
+      sudo ausearch -f /vagrant/
+      sudo aureport
+    }}
+  end
+
+  config.vm :audit do |vm|
+    vm.box = 'bento/ubuntu-18.04'
+    vm.version = '201812.27.0'
+    vm.ip = '192.168.33.3'
+  end
+
+  config.job :normal_audit do |job|
+    job.iterations = 1
+    job.tasks = {audit: [:pre, :auditd_config, :normal, :post]}
+    job.outputs = {audit: {trace: '/var/log/audit/audit.log'}}
+  end
+
+  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end

