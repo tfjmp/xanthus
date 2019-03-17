@@ -78,6 +78,10 @@ end
         system('vagrant', 'halt')
         system('vagrant', 'package', '--output', "#{name}.box")
         puts "#{name}.box created."
+        system('vagrant', 'box', 'add', "local/#{name}", "#{name}.box")
+        system('vagrant', 'destroy', '-f')
+        @box = "local/#{name}"
+        @version = '0'
       end
     end
   end
