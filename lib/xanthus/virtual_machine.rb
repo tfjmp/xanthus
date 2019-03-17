@@ -51,25 +51,7 @@ end
           f.write(self.to_vagrant)
         end
 
-        script = ''
-        boxing.each do |t|
-          v = eval(config.scripts[t])
-          if v.kind_of?(Array)
-            v.each do |w|
-              script+=w+"\n"
-            end
-          else
-            script+=v
-          end
-        end
-
-        script_to_clean = script
-        script = ''
-        script_to_clean.each_line do |s|
-          script += s.strip + "\n" unless s=="\n"
-        end
-        script = script.gsub "\n\n", "\n"
-
+        script =  Script.new(boxing, config).to_s
         File.open('provision.sh', 'w+') do |f|
           f.write(script)
         end
@@ -78,7 +60,7 @@ end
         system('vagrant', 'halt')
         system('vagrant', 'package', '--output', "#{name}.box")
         puts "#{name}.box created."
-        system('vagrant', 'box', 'add', "local/#{name}", "#{name}.box")
+        system('vagrant', 'box', 'add', '--force', "local/#{name}", "#{name}.box")
         system('vagrant', 'destroy', '-f')
         @box = "local/#{name}"
         @version = '0'

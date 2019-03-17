@@ -25,26 +25,8 @@ module Xanthus
 
     def setup_env machine, scripts, config
       puts 'Setting up task on machine '+machine.to_s+'...'
-      script = ''
-      scripts.each do |t|
-        v = eval(config.scripts[t])
-        if v.kind_of?(Array)
-          v.each do |w|
-            script+=w+"\n"
-          end
-        else
-          script+=v
-        end
-      end
+      script = Script.new(scripts, config).to_s
       script += self.output_script(@outputs[machine]) unless  @outputs[machine].nil?
-
-      script_to_clean = script
-      script = ''
-      script_to_clean.each_line do |s|
-        script += s.strip + "\n" unless s=="\n"
-      end
-      script = script.gsub "\n\n", "\n"
-
       FileUtils.mkdir_p machine.to_s
       Dir.chdir machine.to_s do
         if !@inputs[machine].nil?

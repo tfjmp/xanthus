@@ -1,5 +1,6 @@
 require "xanthus/version"
 require "xanthus/init"
+require "xanthus/script"
 require "xanthus/virtual_machine"
 require "xanthus/job"
 require "xanthus/default"
