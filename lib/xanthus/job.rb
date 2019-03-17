@@ -7,12 +7,16 @@ module Xanthus
     attr_accessor :tasks
     attr_accessor :outputs
     attr_accessor :inputs
+    attr_accessor :pre_instructions
+    attr_accessor :post_instructions
 
     def initialize
       @iterations = 0
       @tasks = Hash.new
       @outputs = Hash.new
       @inputs = Hash.new
+      @pre_instructions = nil
+      @post_instructions = nil
     end
 
     def output_script outputs
@@ -25,8 +29,6 @@ module Xanthus
 
     def setup_env machine, scripts, config
       puts 'Setting up task on machine '+machine.to_s+'...'
-      script = Script.new(scripts, config).to_s
-      script += self.output_script(@outputs[machine]) unless  @outputs[machine].nil?
       FileUtils.mkdir_p machine.to_s
       Dir.chdir machine.to_s do
         if !@inputs[machine].nil?
@@ -39,16 +41,45 @@ module Xanthus
         File.open('Vagrantfile', 'w+') do |f|
           f.write(config.vms[machine].to_vagrant)
         end
+        script = Script.new(scripts, config).to_s
+        script += self.output_script(@outputs[machine]) unless  @outputs[machine].nil?
         File.open('provision.sh', 'w+') do |f|
           f.write(script)
         end
       end
     end
 
+    def host_scripts config
+      puts 'Setting up host scripts...'
+      if !@pre_instructions.nil?
+        script = Script.new(@pre_instructions, config).to_s
+        File.open('pre.sh', 'w+') do |f|
+          f.write(script)
+        end
+      end
+
+      if !@post_instructions.nil?
+        script = Script.new(@post_instructions, config).to_s
+        File.open('post.sh', 'w+') do |f|
+          f.write(script)
+        end
+      end
+    end
+
+    def execute_pre_instructions
+      puts 'Running pre instructions...'
+      system('sh', './pre.sh')
+    end
+
     def run machine
       Dir.chdir machine.to_s do
         system('vagrant', 'up')
       end
+    end
+
+    def execute_post_instructions
+      puts 'Running post instructions...'
+      system('sh', './post.sh')
     end
 
     def halt machine
@@ -68,12 +99,15 @@ module Xanthus
       puts "Running job #{name.to_s}-#{iteration.to_s}..."
       FileUtils.mkdir_p 'tmp'
       Dir.chdir 'tmp' do
+        self.host_scripts config
         @tasks.each do |machine, templates|
           self.setup_env machine, templates, config
         end
+        self.execute_pre_instructions unless @pre_instructions.nil?
         @tasks.each do |machine, templates|
           self.run machine
         end
+        self.execute_post_instructions unless @post_instructions.nil?
         @tasks.each do |machine, templates|
           self.halt machine
         end
