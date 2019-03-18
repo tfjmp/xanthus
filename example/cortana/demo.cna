@@ -3,7 +3,7 @@ on ready {
 	println("Hosts:			" . size(hosts()));
 	println("Sessions:		" . size(sessions()));
 	println("Services:		" . size(services()));
-	println("Credentials: 	" . size(credentials());
+	println("Credentials: 	" . size(credentials()));
 }
 
 on console {

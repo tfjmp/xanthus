@@ -52,28 +52,47 @@ Everything is done automatically through scripts for reproducility with minimum 
   # Run Metasploit, Armitage team server, and Cortana
   config.script :attacker do
     %q{%{
-      teamserver 192.168.33.10 password &
+      msfdb init
+      sudo -E teamserver 192.168.33.10 password &
       sleep 60
       cd /usr/share/armitage
       java -jar cortana.jar /vagrant/local.prop /vagrant/demo.cna
     }}
   end
 
+  # Run commands before setting up any machines
+  config.script :before do
+    %q{%{
+      cd attacker && git clone https://github.com/Sliim/pentest-env.git
+    }}
+  end
+
+  # Run commands after all machines are finished
+  config.script :after do
+    %q{%{
+      cd attacker && rm -rf pentest-env
+    }}
+  end
+
   config.vm :victim do |vm|
-    vm.box = 'Sliim/metasploitable2'
+    vm.box = 'e314c/metasploitable2'
     vm.memory = 8192
-    vm.version = '2'
+    vm.version = '0.0.1'
     vm.ip = '192.168.33.8'
   end
 
   config.vm :attacker do |vm|
-    vm.box = 'offensive-security/kali-linux'
-    vm.version = '2018.4.0'
+    vm.box = 'Sliim/kali-2018.1-amd64'
+    vm.version = '1'
     vm.ip = '192.168.33.10'
+    vm.ssh_username = 'root'
+    vm.ssh_key_path = 'pentest-env/ssh-keys/pentest-env'
   end
 
   config.job :cortana do |job|
     job.iterations = 1
+    job.pre_instructions = [:before]
+    job.post_instructions = [:after]
     job.tasks = {victim: [:victim], attacker: [:attacker]}
     job.inputs = {attacker: ['local.prop', 'demo.cna']}
   end
