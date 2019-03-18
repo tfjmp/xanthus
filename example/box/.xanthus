@@ -1,0 +1,88 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'box'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple Box example to demonstrate:
+
+* Xanthus' ability to automatically configure a base VM and create a new Vagrant Box from the configured VM
+* Xanthus allows the boxing step to be fully modularized for code readability and simplicity
+
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  config.seed = 89261464153723628384789259620124900070
+
+  config.script :pre do
+    %q{%{
+      mkdir wgets
+      cd wgets
+    }}
+  end
+
+  config.script :camflow_start do
+    Xanthus::CAMFLOW_START
+  end
+
+  config.script :actions do
+    %q{
+    2.times.collect do
+      'wget http://www.google.com'
+    end
+    }
+  end
+
+  config.script :camflow_stop do
+    Xanthus::CAMFLOW_STOP
+  end
+
+  config.script :post do
+    %q{%{
+      cd ..
+      rm -rf wgets
+    }}
+  end
+
+  config.script :box_prepare do
+    %q{%{
+      sudo dnf -y install curl git
+      git clone https://github.com/CamFlow/camflow-install.git
+      cd camflow-install && make install_rpm
+      sudo sed -i 's/saved/0/g' /etc/default/grub
+      sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+      sudo dnf -y install ruby ruby-devel redhat-rpm-config graphviz dkms
+      gem install json rgl mqtt rake bundler camtool
+    }}
+  end
+
+  config.script :box_clean do
+    %q{%{
+      sudo dd if=/dev/zero of=/EMPTY bs=1M
+      sudo rm -f /EMPTY
+      cat /dev/null > ~/.bash_history && history -c
+    }}
+  end
+
+  config.vm :config_camflow do |vm|
+    vm.box = 'jhcook/fedora27'
+    vm.version = '4.13.12.300'
+    vm.ip = '192.168.33.8'
+    vm.boxing = [:box_prepare, :box_clean]
+  end
+
+  config.job :normal_camflow do |job|
+    job.iterations = 1
+    job.tasks = {config_camflow: [:pre, :camflow_start, :actions, :camflow_stop, :post]}
+  end
+
+  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end
