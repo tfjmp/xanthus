@@ -9,7 +9,7 @@ module Xanthus
     attr_accessor :ip
     attr_accessor :gui
     attr_accessor :boxing
-    attr_accessor :ssh_name
+    attr_accessor :ssh_username
     attr_accessor :ssh_key_path
 
     def initialize
@@ -22,7 +22,7 @@ module Xanthus
       @cpu_cap = 70
       @gui = false
       @boxing = nil
-      @ssh_name = nil
+      @ssh_username = nil
       @ssh_key_path = nil
     end
 
@@ -34,8 +34,8 @@ Vagrant.configure(2) do |config|
   config.vm.network "private_network", ip: "#{@ip}"
 }
 script += %Q{
-  config.ssh.username = "#{@ssh_name}"
-} unless ssh_name.nil?
+  config.ssh.username = "#{@ssh_username}"
+} unless ssh_username.nil?
 script += %Q{
   config.ssh.private_key_path = "#{@ssh_key_path}"
 } unless ssh_key_path.nil?
