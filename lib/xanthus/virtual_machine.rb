@@ -9,6 +9,8 @@ module Xanthus
     attr_accessor :ip
     attr_accessor :gui
     attr_accessor :boxing
+    attr_accessor :ssh_name
+    attr_accessor :ssh_key_path
 
     def initialize
       @name = :default
@@ -20,15 +22,24 @@ module Xanthus
       @cpu_cap = 70
       @gui = false
       @boxing = nil
+      @ssh_name = nil
+      @ssh_key_path = nil
     end
 
     def to_vagrant
-%Q{
+script = %Q{
 Vagrant.configure(2) do |config|
   config.vm.box = "#{@box}"
   config.vm.box_version = "#{@version}"
   config.vm.network "private_network", ip: "#{@ip}"
-
+}
+script += %Q{
+  config.ssh.username = "#{@ssh_name}"
+} unless ssh_name.nil?
+script += %Q{
+  config.ssh.private_key_path = "#{@ssh_key_path}"
+} unless ssh_key_path.nil?
+script += %Q{
   config.vm.provider "virtualbox" do |vb|
    vb.gui = #{@gui}
    vb.memory = #{@memory}
@@ -39,6 +50,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", path: "provision.sh"
 end
 }
+      return script
     end
 
     def generate_box config
