@@ -21,7 +21,7 @@ which is echoed by the server to be "uname -r ; ls".
 The standard output and standard error are also sent to the server, so essentially,
 a reverse TCP shell is created where any command provided by the server will be executed on the victim,
 and the results of the command will be sent to the server.
-Secret information of the victim machine is therefore exfiltrated. 
+Secret information of the victim machine is therefore exfiltrated.
 The attacker also create a new file `.bad_configrc` in the victim machine.
 The file can be a cronjob that further creates damage.
 
@@ -96,10 +96,4 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.inputs = {camflow: ['bad_install.sh']}
     job.outputs = {server: {trace: '/tmp/secrets.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
-
-  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
-  # config.github do |github|
-  #   github.repo = '<ADD GITHUB REPO user/name>'
-  #   github.token = '<ADD GITHUB TOKEN>'
-  # end
 end
