@@ -42,8 +42,11 @@ module Xanthus
           f.write(config.vms[machine].to_vagrant)
         end
         script = Script.new(scripts, config).to_s
-        script += self.output_script(@outputs[machine]) unless  @outputs[machine].nil?
         File.open('provision.sh', 'w+') do |f|
+          f.write(script)
+        end
+        script = self.output_script(@outputs[machine]) unless  @outputs[machine].nil?
+        File.open('before_halt.sh', 'w+') do |f|
           f.write(script)
         end
       end
