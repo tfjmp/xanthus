@@ -93,7 +93,7 @@ Everything is done automatically through scripts for reproducility with minimum 
   config.job :attack_camflow do |job|
     job.iterations = 25
     job.tasks = {server: [:server], camflow: [:camflow_start, :attack, :camflow_stop]}
-    job.inputs = {camflow: ['bad_install.sh']}
+    job.inputs = {camflow: ['bad_install.sh', 'ipscan_3.5.5_amd64.deb']}
     job.outputs = {server: {trace: '/tmp/secrets.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 end
