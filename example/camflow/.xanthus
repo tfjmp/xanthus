@@ -95,7 +95,7 @@ Everything is done automatically through scripts for reproducility with minimum 
       mkdir /tmp/webtest
       cd /tmp/webtest
       wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
-      sudo python /vagrant/wget-exploit.py 2>&1 & 
+      sudo python /vagrant/wget-exploit.py > /tmp/wget.txt & 
     }}
   end
 
@@ -126,7 +126,7 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.iterations = 2
     job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
-    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
+    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
   # Uncomment the following code and provide GitHub credentials to push the results to GitHub
