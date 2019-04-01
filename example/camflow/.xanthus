@@ -59,6 +59,7 @@ Everything is done automatically through scripts for reproducility with minimum 
       sudo dpkg -i ipscan_3.5.5_amd64.deb
       rm ipscan_3.5.5_amd64.deb
       sleep 5
+      apt list --installed > /tmp/list.txt
     }}
   end
 
@@ -68,6 +69,7 @@ Everything is done automatically through scripts for reproducility with minimum 
       sudo dpkg -i ipscan_3.5.5_amd64.deb
       rm ipscan_3.5.5_amd64.deb
       sleep 5
+      apt list --installed > /tmp/list.txt
     }}
   end
 
@@ -127,7 +129,7 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.iterations = 2
     job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
-    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
+    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
   end
 
   # Uncomment the following code and provide GitHub credentials to push the results to GitHub
