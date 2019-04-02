@@ -55,21 +55,21 @@ Everything is done automatically through scripts for reproducility with minimum 
 
   config.script :normal do
     %q{%{
+      sudo ufw disable
       /usr/local/bin/wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
       sudo dpkg -i ipscan_3.5.5_amd64.deb
       rm ipscan_3.5.5_amd64.deb
       sleep 5
-      apt list --installed > /tmp/list.txt
     }}
   end
 
   config.script :attack do
     %q{%{
+      sudo ufw disable
       /usr/local/bin/wget 192.168.33.3/ipscan_3.5.5_amd64.deb
       sudo dpkg -i ipscan_3.5.5_amd64.deb
       rm ipscan_3.5.5_amd64.deb
       sleep 5
-      apt list --installed > /tmp/list.txt
     }}
   end
 
@@ -84,6 +84,7 @@ Everything is done automatically through scripts for reproducility with minimum 
   # It is able to run a python script provided by the user
   config.script :server do
     %q{%{
+      sudo ufw disable
       sudo apt-get -y update
       sudo apt-get -y install build-essential
       sudo apt-get -y install python-pip python-dev
@@ -120,7 +121,7 @@ Everything is done automatically through scripts for reproducility with minimum 
   config.job :normal_camflow do |job|
     job.iterations = 2
     job.tasks = {camflow: [:pre, :camflow_start, :normal, :camflow_stop, :post]}
-    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
+    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
   # Xanthus supports input scripts, files, packages provided by the user to the VM
@@ -129,7 +130,7 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.iterations = 2
     job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
-    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
+    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
   # Uncomment the following code and provide GitHub credentials to push the results to GitHub

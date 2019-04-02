@@ -34,6 +34,7 @@ while the attack behavior downloads the same series but one of the Debian packag
 
   config.script :normal do
     %q{%{
+      sudo ufw disable
       sleep 5
       /usr/local/bin/wget http://ftp.osuosl.org/pub/ubuntu/pool/universe/f/fonts-adf/fonts-adf-accanthis_0.20110505-1_all.deb
       sudo dpkg -i fonts-adf-accanthis_0.20110505-1_all.deb
@@ -91,12 +92,12 @@ while the attack behavior downloads the same series but one of the Debian packag
       sudo dpkg -i fasd_1.0.1-1_all.deb
       rm fasd_1.0.1-1_all.deb
       sleep 7
-      apt list --installed > /tmp/list.txt
     }}
   end
 
   config.script :attack do
     %q{%{
+      sudo ufw disable
       /usr/local/bin/wget http://ftp.osuosl.org/pub/ubuntu/pool/universe/f/fonts-adf/fonts-adf-accanthis_0.20110505-1_all.deb
       sudo dpkg -i fonts-adf-accanthis_0.20110505-1_all.deb
       rm fonts-adf-accanthis_0.20110505-1_all.deb
@@ -153,7 +154,6 @@ while the attack behavior downloads the same series but one of the Debian packag
       sudo dpkg -i fasd_1.0.1-1_all.deb
       rm fasd_1.0.1-1_all.deb
       sleep 7
-      apt list --installed > /tmp/list.txt
     }}
   end
 
@@ -175,7 +175,7 @@ while the attack behavior downloads the same series but one of the Debian packag
 
   config.script :server do
     %q{%{
-      sudo systemctl stop firewalld
+      sudo ufw disable
       sudo apt-get -y update
       sudo apt-get -y install build-essential
       sudo apt-get -y install python-pip python-dev
@@ -216,14 +216,14 @@ while the attack behavior downloads the same series but one of the Debian packag
   config.job :normal_camflow do |job|
     job.iterations = 125
     job.tasks = {camflow: [:pre, :camflow_start, :normal, :camflow_stop, :post]}
-    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
+    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
   config.job :attack_camflow do |job|
     job.iterations = 25
     job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit3.py']}
-    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log', system: '/tmp/list.txt'}}
+    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
 
   config.job :normal_spade do |job|
