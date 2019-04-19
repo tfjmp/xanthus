@@ -44,6 +44,9 @@ Vagrant.configure(2) do |config|
   config.vm.network "private_network", ip: "#{@ip}"
 }
 script += %Q{
+  config.vm.synced_folder ".", "/vagrant", disabled: false, type: 'rsync'
+} unless !@on_aws
+script += %Q{
   config.ssh.username = "#{@ssh_username}"
 } unless ssh_username.nil?
 script += %Q{
