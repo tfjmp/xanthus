@@ -1,0 +1,68 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+Xanthus.configure do |config|
+  config.name = 'aws'
+  config.authors = 'Xueyuan Michael Han'
+  config.description = %q{
+A simple AWS example to demonstrate:
+
+* Xanthus' compatibility with Amazon Web Services (AWS).
+
+We show that the user can easily use Xanthus with AWS to perform penetration testing.
+Everything is done automatically through scripts for reproducility with minimum human interaction.
+}
+  config.seed = 338224047635673319344589725790566336446
+
+  config.script :test do
+    %q{%{
+      wget www.google.com
+      touch /tmp/output.txt
+      sudo python3 /vagrant/wget-exploit3.py &
+    }}
+  end
+
+  config.script :camflow_start do
+    Xanthus::CAMFLOW_START
+  end
+
+  config.script :camflow_stop do
+    Xanthus::CAMFLOW_STOP
+  end
+
+  config.vm :server do |vm|
+    vm.on_aws = true
+    vm.box = 'michaelh/aws-ubuntu'
+    vm.version = "0.0.1"
+    # Save your AWS access key ID and secret in the environment variables.
+    # Then provide the name of the environment variables in the following two options.
+    # One should not reveal AWS' secret key.
+    vm.aws_env_key_id = 'AWS_MICHAEL_ACCESS_KEY_ID'
+    vm.aws_env_key_secret = 'AWS_MICHAEL_SECRET_ACCESS_KEY'
+    vm.aws_key_pair_name = 'michael-key-pair-london'
+    vm.aws_region = 'eu-west-2'
+    vm.aws_ami = 'ami-0eb1506dff9eb6702'
+    vm.aws_instance_type = 'i3.large'
+    vm.aws_security_group = 'michael-test-london'
+    vm.ssh_username = 'ubuntu'
+    # Include the private key file to use SSH
+    vm.ssh_key_path = '/Users/Michael/Documents/aws/michael-key-pair-london.pem'
+  end
+
+  config.job :run_aws do |job|
+    job.iterations = 1
+    job.tasks = {server: [:camflow_start, :test, :camflow_stop]}
+    job.inputs = {server: ['wget-exploit3.py']}
+    job.outputs = {server: {trace: '/tmp/output.txt'}}
+  end
+
+  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
+end
