@@ -19,8 +19,6 @@ module Xanthus
     attr_accessor :aws_ami
     attr_accessor :aws_instance_type
     attr_accessor :aws_security_group
-    attr_accessor :ssh_username
-    attr_accessor :ssh_private_key_path
 
     def initialize
       @name = :default
