@@ -11,6 +11,16 @@ module Xanthus
     attr_accessor :boxing
     attr_accessor :ssh_username
     attr_accessor :ssh_key_path
+    attr_accessor :on_aws
+    attr_accessor :aws_env_key_id
+    attr_accessor :aws_env_key_secret
+    attr_accessor :aws_key_pair_name
+    attr_accessor :aws_region
+    attr_accessor :aws_ami
+    attr_accessor :aws_instance_type
+    attr_accessor :aws_security_group
+    attr_accessor :ssh_username
+    attr_accessor :ssh_private_key_path
 
     def initialize
       @name = :default
@@ -40,14 +50,26 @@ script += %Q{
   config.ssh.private_key_path = "#{@ssh_key_path}"
 } unless ssh_key_path.nil?
 script += %Q{
-  config.vm.provider "virtualbox" do |vb|
+  config.vm.provider "virtualbox" do |vb, override|
    vb.gui = #{@gui}
    vb.memory = #{@memory}
    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "#{@cpu_cap}"]
    vb.cpus = #{@cpus}
    vb.name = "#{@name}"
   end
-  config.vm.provision "shell", path: "provision.sh"
+} unless @on_aws
+script += %Q{
+  config.vm.provider "aws" do |aws, override|
+   aws.access_key_id = ENV['#{@aws_env_key_id}']
+   aws.secret_access_key = ENV['#{@aws_env_key_secret}']
+   aws.keypair_name = '#{@aws_key_pair_name}'
+   aws.region = '#{@aws_region}'
+   aws.ami =  '#{@aws_ami}'
+   aws.instance_type = '#{@aws_instance_type}'
+   aws.security_groups = ['#{@aws_security_group}']
+  end
+} unless !@on_aws
+script += %Q{  config.vm.provision "shell", path: "provision.sh"
 
   config.trigger.before :halt do |trigger|
     trigger.info = "Retrieving data before halt..."
