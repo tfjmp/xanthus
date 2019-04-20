@@ -74,7 +74,7 @@ script += %Q{  config.vm.provision "shell", path: "provision.sh"
 
   config.trigger.before :halt do |trigger|
     trigger.info = "Retrieving data before halt..."
-    trigger.run_remote = {path: "before_halt.sh"}
+    trigger.run = {path: "before_halt.sh"}
   end
 end
 }
