@@ -19,11 +19,11 @@ Everything is done automatically through scripts for reproducility with minimum 
   config.seed = 338224047635673319344589725790566336446
 
   config.script :test do
-    %q{%{
-      wget www.google.com
-      touch /tmp/output.txt
-      sudo python3 /vagrant/wget-exploit3.py &
-    }}
+    %q{
+    2.times.collect do
+      'wget http://www.google.com'
+    end
+    }
   end
 
   config.script :camflow_start do
@@ -56,8 +56,7 @@ Everything is done automatically through scripts for reproducility with minimum 
   config.job :run_aws do |job|
     job.iterations = 1
     job.tasks = {server: [:camflow_start, :test, :camflow_stop]}
-    job.inputs = {server: ['wget-exploit3.py']}
-    job.outputs = {server: {trace: '/tmp/output.txt'}}
+    job.outputs = {server: {trace: '/tmp/audit.log'}}
   end
 
   # Uncomment the following code and provide GitHub credentials to push the results to GitHub
