@@ -121,10 +121,17 @@ It is very cool and interesting!
     job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
 
-  config.github do |github|
-    github.repo = '<ADD GITHUB REPO user/name>'
-    github.token = '<ADD GITHUB TOKEN>'
+  config.dataverse do |dataverse|
+    dataverse.server = <ADD DATAVERSE BASE URL>
+    dataverse.repo = <PROVIDE DATAVERSE NAME>
+    dataverse.token = <PROVIDE DATAVERSE TOKEN>
+    dataverse.subject = <PROVIDE DATAVERSE SUBJECT (e.g. engineering)>
   end
+
+  # config.github do |github|
+  #   github.repo = '<ADD GITHUB REPO user/name>'
+  #   github.token = '<ADD GITHUB TOKEN>'
+  # end
 end
 }
       file.write(script)
