@@ -1,7 +1,7 @@
 require 'fileutils'
 
 module Xanthus
-  class Dataverse
+  class Dataverse < Repository
     attr_accessor :server
     attr_accessor :repo
     attr_accessor :token

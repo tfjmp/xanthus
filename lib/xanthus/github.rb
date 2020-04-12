@@ -1,7 +1,7 @@
 require 'fileutils'
 
 module Xanthus
-  class GitHub
+  class GitHub < Repository
     attr_accessor :repo
     attr_accessor :token
     attr_accessor :folder
