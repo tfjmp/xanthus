@@ -32,7 +32,7 @@ json = %Q{
         "citation": {
           "fields": [
             {
-              "value": "#{@dataset_name}-#{Time.now.strftime("%Y-%m-%d_%H-%M")}",
+              "value": "#{@dataset_name}",
               "typeClass": "primitive",
               "multiple": false,
               "typeName": "title"
@@ -112,7 +112,10 @@ json = %Q{
         File.open('dataset.json', 'w+') do |f|
           f.write(self.dataset_json)
         end
+        puts "Creating dataverse #{@dataset_name} in #{@repo} at #{@server}..."
         system('curl', '-H', "X-Dataverse-key:#{@token}", '-X', 'POST', "#{@server}/api/dataverses/#{@repo}/datasets", '--upload-file', 'dataset.json')
+        puts '' # needed to escape curl output
+        puts 'Dataverse created.'
       end
     end
 
@@ -122,7 +125,7 @@ json = %Q{
       @affiliation = config.affiliation
       @email = config.email
       @description = config.description
-      @dataset_name = config.name
+      @dataset_name = config.name+'-'+Time.now.strftime("%Y-%m-%d_%H-%M")
 
       FileUtils.mkdir_p 'dataverse_dataset'
       self.generate_dataset
