@@ -140,12 +140,14 @@ json = %Q{
         Dir.chdir 'repo' do
           self.xanthus_file
           self.readme_file config
+          self.inputs_file config
         end
       end
     end
 
     def add_file_to_dataverse name, description, folder
-      `curl -H X-Dataverse-key:#{@token} -X POST -F "file=@#{name}" -F 'jsonData={"description":"#{description}","directoryLabel":"#{folder}","categories":["Data"], "restrict":"false"}' "#{@server}/api/datasets/:persistentId/add?persistentId=#{@doi}"`
+      output = `curl -H X-Dataverse-key:#{@token} -X POST -F "file=@#{name}" -F 'jsonData={"description":"#{description}","directoryLabel":"#{folder}","categories":["Data"], "restrict":"false"}' "#{@server}/api/datasets/:persistentId/add?persistentId=#{@doi}"`
+      puts output
     end
 
     def xanthus_file
@@ -156,6 +158,17 @@ json = %Q{
     def readme_file config
       self.prepare_readme_file config
       self.add_file_to_dataverse 'README.md', 'readme describing the dataset.', 'metadata'
+    end
+
+    def inputs_file config
+      config.jobs.each do |name,job|
+        job.inputs.each do |k, files|
+          files.each do |file|
+            system('cp', '-f', "../../#{file}", "#{file}")
+            self.add_file_to_dataverse file, 'Job input file.', 'metadata'
+          end
+        end
+      end
     end
 
   end
