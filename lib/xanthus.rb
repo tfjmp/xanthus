@@ -5,6 +5,7 @@ require "xanthus/virtual_machine"
 require "xanthus/job"
 require "xanthus/default"
 require "xanthus/github"
+require "xanthus/dataverse"
 require "xanthus/configuration"
 
 module Xanthus
