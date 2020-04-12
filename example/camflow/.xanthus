@@ -8,6 +8,8 @@
 Xanthus.configure do |config|
   config.name = 'wget-apt'
   config.authors = 'Xueyuan Michael Han'
+  config.affiliation = 'Harvard University'
+  config.email = 'hanx@g.harvard.edu'
   config.description = %q{
 WGET remote arbitrary file vulnerability is exploited with a weaponized Debian package with Trojan backdoor.
 The benign behavior downloads a series of Debian packages and install them to the system,

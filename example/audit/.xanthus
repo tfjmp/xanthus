@@ -8,6 +8,8 @@
 Xanthus.configure do |config|
   config.name = 'audit'
   config.authors = 'Xueyuan Michael Han'
+  config.affiliation = 'Harvard University'
+  config.email = 'hanx@g.harvard.edu'
   config.description = %q{
 A simple Audit example to demonstrate:
 

@@ -2,6 +2,8 @@ module Xanthus
   class Configuration
     attr_accessor :name
     attr_accessor :authors
+    attr_accessor :affiliation
+    attr_accessor :email
     attr_accessor :description
     attr_accessor :seed
     attr_accessor :params
@@ -52,9 +54,11 @@ module Xanthus
       %Q{
 # #{@name}
 
-Authors: #{@authors}
+authors: #{@authors}
+affiliation: #{@affiliation}
+email: #{@email}
 
-Seed: #{@seed}
+seed: #{@seed}
 
 ## Description
 

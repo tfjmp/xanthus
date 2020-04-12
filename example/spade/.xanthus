@@ -8,6 +8,8 @@
 Xanthus.configure do |config|
   config.name = 'spade'
   config.authors = 'Xueyuan Michael Han'
+  config.affiliation = 'Harvard University'
+  config.email = 'hanx@g.harvard.edu'
   config.description = %q{
 A simple SPADE example to demonstrate:
 
@@ -76,7 +78,7 @@ Everything is done automatically through scripts for reproducility with minimum 
       mkdir /tmp/webtest
       cd /tmp/webtest
       wget https://github.com/angryip/ipscan/releases/download/3.5.5/ipscan_3.5.5_amd64.deb
-      sudo python /vagrant/wget-exploit.py 2>&1 & 
+      sudo python /vagrant/wget-exploit.py 2>&1 &
     }}
   end
 

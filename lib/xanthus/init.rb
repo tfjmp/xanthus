@@ -17,6 +17,8 @@ module Xanthus
 Xanthus.configure do |config|
   config.name = '#{@@name}'
   config.authors = 'John Doe'
+  config.affiliation = 'Somewhere University'
+  config.email = 'john.doe@somewhere.edu'
   config.description = %q{
 Describe my super experiment.
 

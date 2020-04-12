@@ -8,6 +8,8 @@
 Xanthus.configure do |config|
   config.name = 'shellshock'
   config.authors = 'Xueyuan Michael Han'
+  config.affiliation = 'Harvard University'
+  config.email = 'hanx@g.harvard.edu'
   config.description = %q{
 A simple ShellShock example to demonstrate:
 

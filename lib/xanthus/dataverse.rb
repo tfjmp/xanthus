@@ -117,8 +117,9 @@ json = %Q{
     def init config
       # initialize with config information
       @author = config.authors
+      @affiliation = config.affiliation
+      @email = config.email
       @description = config.description
-      @dataset_name = config.name
 
       FileUtils.mkdir_p 'dataverse_dataset'
       self.generate_dataset
