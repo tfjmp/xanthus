@@ -7,6 +7,7 @@ module Xanthus
     attr_accessor :folder
 
     def initialize
+      super
       @repo = ''
       @token = ''
       @folder = Time.now.strftime("%Y-%m-%d_%H-%M")
@@ -20,23 +21,14 @@ module Xanthus
     end
 
     def xanthus_file
-      script = ''
-      File.readlines('../../.xanthus').each do |line|
-        script += line unless line.include? 'github.token'
-        script += "\t\tgithub.token = 'REMOVED'\n" unless !line.include? 'github.token'
-      end
-      File.open('.xanthus', 'w+') do |f|
-        f.write(script)
-      end
+      self.prepare_xanthus_file
       system('git', 'add', '.xanthus')
       system('git', 'commit', '-m', "[Xanthus] :horse: pushed #{@folder}/.xanthus :horse:")
       system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')
     end
 
     def readme_file config
-      File.open('README.md', 'w+') do |f|
-        f.write(config.to_readme_md)
-      end
+      self.prepare_readme_file config
       system('git', 'add', 'README.md')
       system('git', 'commit', '-m', "[Xanthus] :horse: pushed #{@folder}/README.md :horse:")
       system('git', 'push', "https://#{@token}@github.com/#{@repo}", 'master')

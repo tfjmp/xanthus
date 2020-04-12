@@ -14,6 +14,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://camflow.org"
   spec.license       = "MIT"
 
+  spec.add_runtime_dependency "json", "~> 2.3"
+
   # Specify which files should be added to the gem when it is released.
   spec.files         = Dir.glob("{bin,lib}/**/*") + %w(LICENSE README.md)
   spec.bindir        = "bin"
