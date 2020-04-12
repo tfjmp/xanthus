@@ -3,6 +3,7 @@ require 'fileutils'
 module Xanthus
   class Dataverse
     attr_accessor :server
+    attr_accessor :repo
     attr_accessor :token
     attr_accessor :dataset_name
     attr_accessor :author
@@ -12,6 +13,7 @@ module Xanthus
     attr_accessor :subject
 
     def initialize
+      @server = 'default_server'
       @repo = 'default_repo'
       @token = 'default_token'
       @dataset_name = 'default_name'
@@ -78,7 +80,7 @@ json = %Q{
             {
               "value": [ {
                  "dsDescriptionValue":{
-                  "value": "#{@description}",
+                  "value": "#{@description.gsub(/\r/," ").gsub(/\n/," ")}",
                   "multiple":false,
                  "typeClass": "primitive",
                  "typeName": "dsDescriptionValue"
@@ -110,7 +112,7 @@ json = %Q{
         File.open('dataset.json', 'w+') do |f|
           f.write(self.dataset_json)
         end
-        system('curl', '-H', "X-Dataverse-key:#{@token}", '-X', 'POST', "#{@server}/api/dataverses/root/datasets", '--upload-file', 'dataset.json')
+        system('curl', '-H', "X-Dataverse-key:#{@token}", '-X', 'POST', "#{@server}/api/dataverses/#{@repo}/datasets", '--upload-file', 'dataset.json')
       end
     end
 
@@ -120,6 +122,7 @@ json = %Q{
       @affiliation = config.affiliation
       @email = config.email
       @description = config.description
+      @dataset_name = config.name
 
       FileUtils.mkdir_p 'dataverse_dataset'
       self.generate_dataset
