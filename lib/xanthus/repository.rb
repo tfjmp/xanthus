@@ -8,11 +8,11 @@ module Xanthus
       script = ''
       File.readlines('../../.xanthus').each do |line|
         script += line unless line.include?('github.token') || line.include?('dataverse.token')
-        
+
         # remove github token
-        script += "\t\tgithub.token = 'REMOVED'\n" unless !line.include? 'github.token'
+        script += "\t\t# github.token = 'REMOVED'\n" unless !line.include? 'github.token'
         # remove dataverse token
-        script += "\t\tdataverse.token = 'REMOVED'\n" unless !line.include? 'dataverse.token'
+        script += "\t\t# dataverse.token = 'REMOVED'\n" unless !line.include? 'dataverse.token'
       end
       File.open('.xanthus', 'w+') do |f|
         f.write(script)

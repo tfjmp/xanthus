@@ -124,6 +124,7 @@ module Xanthus
       system('rm', '-rf', "#{name.to_s}-#{iteration.to_s}")
       config.github_conf.add("#{name.to_s}-#{iteration.to_s}.tar.gz") unless config.github_conf.nil?
       config.github_conf.push unless config.github_conf.nil?
+      config.dataverse_conf.add("#{name.to_s}-#{iteration.to_s}.tar.gz") unless config.dataverse_conf.nil?
       puts "Job #{name.to_s}-#{iteration.to_s} done."
     end
   end

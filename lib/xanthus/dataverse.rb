@@ -171,5 +171,9 @@ json = %Q{
       end
     end
 
+    def add content
+      self.add_file_to_dataverse content, "#{content} is a Xanthus generated file (check metadata for description)", 'data'
+    end
+
   end
 end
