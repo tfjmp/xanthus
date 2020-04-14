@@ -12,12 +12,12 @@ elsif (instruction == 'init' && !param1.nil?)
 elsif (instruction == 'run')
   load('./.xanthus')
 elsif (instruction == 'help')
-  puts 'xanthus version | return version number.'
-  puts 'xanthus depencies | installation instruction for system dependencies.'
-  puts 'xanthus init <project name> | inialise a new project.'
-  puts 'xanthus run | run .xanthus file contained in the current folder.'
+  puts 'xanthus version | return Xanthus version number.'
+  puts 'xanthus dependencies | installation instructions for system dependencies.'
+  puts 'xanthus init <project name> | initialize a new project.'
+  puts 'xanthus run | run .xanthus file in the current folder.'
 elsif (instruction == 'dependencies')
-  puts 'You need to install the following software on your system for xanthus to run:'
+  puts 'You need to install the following software on your system for Xanthus to run:'
   puts 'git (see https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)'
   puts 'git lfs (see https://help.github.com/en/articles/installing-git-large-file-storage)'
   puts 'virtualbox (see https://www.virtualbox.org/wiki/Downloads)'

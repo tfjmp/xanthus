@@ -200,10 +200,10 @@ Or install it yourself as:
 ### Usage
 
 ```
-xanthus version | return version number.
-xanthus depencies | installation instruction for system dependencies.
-xanthus init <project name> | inialise a new project.
-xanthus run | run .xanthus file contained in the current folder.
+xanthus version | return Xanthus version number.
+xanthus dependencies | installation instructions for system dependencies.
+xanthus init <project name> | initialize a new project.
+xanthus run | run .xanthus file in the current folder.
 ```
 
 ### Development
