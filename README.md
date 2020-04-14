@@ -209,9 +209,10 @@ TODO: Write usage instructions here
 
 ### Development
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+You first need to clone the repo through `git clone https://github.com/tfjmp/xanthus`, enter the created folder `cd xanthus`.
+To build the gem run `gem build xanthus`.
+To install this gem onto your local machine, run `gem install xanthus`.
+To release a new version, update the version number in `lib/xanthus/version.rb`, tag the repository `git tag -a x.x.x -m 'x.x.x'`, push the tag `git push --tags` and then run `gem push xanthus-x.x.x.gem`. This last step publish the gem at [https://rubygems.org/gems/xanthus](https://rubygems.org/gems/xanthus).
 
 ### Contributing
 
