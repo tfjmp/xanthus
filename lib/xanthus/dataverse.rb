@@ -117,7 +117,7 @@ json = %Q{
           f.write(self.dataset_json)
         end
         puts "Creating dataverse #{@dataset_name} in #{@repo} at #{@server}..."
-        output = `curl -H X-Dataverse-key:#{@token} -X POST #{@server}/api/dataverses/#{@repo}/datasets --upload-file dataset.json`
+        output = `curl --speed-time 15 --speed-limit 1000 --retry 50 --retry-max-time 0 -H X-Dataverse-key:#{@token} -X POST #{@server}/api/dataverses/#{@repo}/datasets --upload-file dataset.json`
         puts output # needed to escape curl output
         parsed = JSON.parse(output)
         @doi = parsed['data']['persistentId']
@@ -146,7 +146,7 @@ json = %Q{
     end
 
     def add_file_to_dataverse name, description, folder
-      output = `curl -H X-Dataverse-key:#{@token} -X POST -F "file=@#{name}" -F 'jsonData={"description":"#{description}","directoryLabel":"#{folder}","categories":["Data"], "restrict":"false"}' "#{@server}/api/datasets/:persistentId/add?persistentId=#{@doi}"`
+      output = `curl --speed-time 15 --speed-limit 1000 --retry 50 --retry-max-time 0 -H X-Dataverse-key:#{@token} -X POST -F "file=@#{name}" -F 'jsonData={"description":"#{description}","directoryLabel":"#{folder}","categories":["Data"], "restrict":"false"}' "#{@server}/api/datasets/:persistentId/add?persistentId=#{@doi}"`
       puts output
     end
 
