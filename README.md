@@ -208,15 +208,32 @@ xanthus run | run .xanthus file in the current folder.
 
 ### Development
 
-You first need to clone the repo through `git clone https://github.com/tfjmp/xanthus`, enter the created folder `cd xanthus`.
-To build the gem run `gem build xanthus`.
-To install this gem onto your local machine, run `gem install xanthus`.
-To release a new version, update the version number in `lib/xanthus/version.rb`, tag the repository `git tag -a x.x.x -m 'x.x.x'`, push the tag `git push --tags` and then run `gem push xanthus-x.x.x.gem`. This last step publish the gem at [https://rubygems.org/gems/xanthus](https://rubygems.org/gems/xanthus).
+To add more features in `Xanthus`,
+clone this repository
+```
+git clone https://github.com/tfjmp/xanthus
+cd xanthus
+```
+and build the gem by running 
+```
+gem build xanthus
+```
+To install this gem locally on your machine, you can also run
+```
+gem install xanthus
+```
+After you add a new feature (and test it yourself), you can release a new version of `Xanthus`.
+First, please update the version number in `lib/xanthus/version.rb`, tag the repository `git tag -a x.x.x -m 'x.x.x'`, and push the tag `git push --tags`.
+Then you can run 
+```
+gem push xanthus-x.x.x.gem
+```
+This last step publishes the gem at [https://rubygems.org/gems/xanthus](https://rubygems.org/gems/xanthus).
 
-### Contributing
+### Contribution
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/xanthus.
+We welcome bug reports and pull requests on GitHub at https://github.com/[USERNAME]/xanthus.
 
 ### License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+This gem is available as an open source project under the [MIT License](https://opensource.org/licenses/MIT).
