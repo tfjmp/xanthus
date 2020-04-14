@@ -45,6 +45,7 @@ module Xanthus
         File.open('provision.sh', 'w+') do |f|
           f.write(script)
         end
+        script = 'echo "nothing to do"'
         script = self.output_script(machine, @outputs[machine]) unless  @outputs[machine].nil?
         File.open('before_halt.sh', 'w+') do |f|
           f.write(script)
