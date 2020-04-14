@@ -82,9 +82,10 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.tasks = {config_camflow: [:pre, :camflow_start, :actions, :camflow_stop, :post]}
   end
 
-  # Uncomment the following code and provide GitHub credentials to push the results to GitHub
-  # config.github do |github|
-  #   github.repo = '<ADD GITHUB REPO user/name>'
-  #   github.token = '<ADD GITHUB TOKEN>'
+  # config.dataverse do |dataverse|
+  #   dataverse.server = <ADD DATAVERSE BASE URL>
+  #   dataverse.repo = <PROVIDE DATAVERSE NAME>
+  #   dataverse.token = <PROVIDE DATAVERSE TOKEN>
+  #   dataverse.subject = <PROVIDE DATAVERSE SUBJECT (e.g. engineering)>
   # end
 end

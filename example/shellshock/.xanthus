@@ -98,4 +98,11 @@ Everything is done automatically through scripts for reproducility with minimum 
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb'], camflow: ['bad_install.sh']}
     job.outputs = {server: {trace: '/tmp/secrets.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
   end
+
+  # config.dataverse do |dataverse|
+  #   dataverse.server = <ADD DATAVERSE BASE URL>
+  #   dataverse.repo = <PROVIDE DATAVERSE NAME>
+  #   dataverse.token = <PROVIDE DATAVERSE TOKEN>
+  #   dataverse.subject = <PROVIDE DATAVERSE SUBJECT (e.g. engineering)>
+  # end  
 end
