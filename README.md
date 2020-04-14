@@ -181,12 +181,6 @@ The user must provide such a script.
 In our case, we automatically generate attack scripts using `wget-attack-script-gen.py`.
 `Xanthus` allows users to provide logic to generate scripts or simply provide scripts to run during the experiment.
 
-## Xanthus
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/xanthus`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ### Installation
 
 Add this line to your application's Gemfile:
@@ -205,7 +199,12 @@ Or install it yourself as:
 
 ### Usage
 
-TODO: Write usage instructions here
+```
+xanthus version | return version number.
+xanthus depencies | installation instruction for system dependencies.
+xanthus init <project name> | inialise a new project.
+xanthus run | run .xanthus file contained in the current folder.
+```
 
 ### Development
 
