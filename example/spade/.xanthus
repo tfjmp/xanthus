@@ -22,6 +22,17 @@ Everything is done automatically through scripts for reproducility with minimum 
 }
   config.seed = 21789605364839991191189884954466724277
 
+  config.script :spade_config do
+    %q{%{
+      sed -i "s,versions=false,versions=true agents=false," /home/vagrant/SPADE/cfg/spade.client.Control.config
+      sudo sed -i "s,disp_qos = lossy,disp_qos = lossless," /etc/audit/auditd.conf
+      sudo sed -i "s,q_depth = 250,q_depth = 99999," /etc/audisp/audispd.conf
+      sudo sed -i "s,-b 8192,-b 1000000," /etc/audit/audit.rules
+      sudo service auditd stop
+      sudo service auditd start
+    }}
+  end
+
   config.script :spade_start do
     Xanthus::SPADE_START
   end
@@ -100,13 +111,13 @@ Everything is done automatically through scripts for reproducility with minimum 
   # We can actually reuse the code and run both CamFlow and SPADE experiments/jobs in the same Xanthus project in the same .xanthus script
   config.job :normal_spade do |job|
     job.iterations = 2
-    job.tasks = {spade: [:pre, :spade_start, :normal, :spade_stop, :post]}
-    job.outputs = {spade: {trace: '/tmp/audit_cmd.avro'}}
+    job.tasks = {spade: [:pre, :spade_config, :spade_start, :normal, :spade_stop, :post]}
+    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
 
   config.job :attack_spade do |job|
     job.iterations = 2
-    job.tasks = {server: [:server], spade: [:pre, :spade_start, :attack, :spade_stop, :post]}
+    job.tasks = {server: [:server], spade: [:pre, :spade_config, :spade_start, :attack, :spade_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit.py']}
     job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
