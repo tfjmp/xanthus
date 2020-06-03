@@ -198,7 +198,7 @@ while the attack behavior downloads the same series but one of the Debian packag
 
   config.vm :camflow do |vm|
     vm.box = 'michaelh/ubuncam'
-    vm.version = '0.0.3'
+    vm.version = '0.0.4'
     vm.ip = '192.168.33.8'
   end
 

@@ -42,6 +42,11 @@ Vagrant.configure(2) do |config|
   config.vm.network "private_network", ip: "#{@ip}"
 }
 script += %Q{
+if Vagrant.has_plugin?("vagrant-vbguest")
+  config.vbguest.auto_update = false 
+end
+}
+script += %Q{
   config.vm.synced_folder ".", "/vagrant", disabled: false, type: 'rsync'
 } unless !@on_aws
 script += %Q{
