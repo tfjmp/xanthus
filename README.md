@@ -237,3 +237,51 @@ We welcome bug reports and pull requests on GitHub at https://github.com/[USERNA
 ### License
 
 This gem is available as an open source project under the [MIT License](https://opensource.org/licenses/MIT).
+
+### Issues and Solutions with VirtualBox
+VirtualBox Guest Additions is not as well designed as we may hope. If you encountered the following error:
+```
+Vagrant was unable to mount VirtualBox shared folders. This is usually
+because the filesystem "vboxsf" is not available. This filesystem is
+made available via the VirtualBox Guest Additions and kernel module.
+Please verify that these guest additions are properly installed in the
+guest. This is not a bug in Vagrant and is usually caused by a faulty
+Vagrant box. For context, the command attempted was:
+
+mount -t vboxsf -o uid=900,gid=900 vagrant /vagrant
+
+The error output from the command was:
+
+/sbin/mount.vboxsf: mounting failed with the error: No such device
+```
+It is most likely the fault of incompatible GA between the VM and the host. Even though the script might have stop, the VM is still booted. You can `vagrant ssh` into the VM and manually input the following two commands:
+```
+sudo apt-get -y install dkms build-essential linux-headers-$(uname -r) virtualbox-guest-additions-iso
+sudo /opt/VBoxGuestAdditions*/init/vboxadd setup
+```
+After this, you may encounter this error:
+```
+...
+==> default: Machine booted and ready!
+[default] GuestAdditions seems to be installed (6.0.20) correctly, but not running.
+bash: line 4: setup: command not found
+==> default: Checking for guest additions in VM...
+The following SSH command responded with a non-zero exit status.
+Vagrant assumes that this means the command failed!
+
+ setup
+
+Stdout from the command:
+
+
+
+Stderr from the command:
+
+bash: line 4: setup: command not found
+```
+Please add the following into the Vagrant script:
+```
+if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false  
+end
+```
