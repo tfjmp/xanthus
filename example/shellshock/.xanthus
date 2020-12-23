@@ -60,7 +60,7 @@ Everything is done automatically through scripts for reproducility with minimum 
     %q{%{
       sudo apt-get -y update
       sudo apt-get -y install build-essential
-      sudo apt-get -y install python-pip python-dev
+      sudo DEBIAN_FRONTEND=noninteractive apt-get -y install python-pip python-dev
       sudo pip install pyftpdlib
 
       mkdir /tmp/ftptest
