@@ -20,9 +20,9 @@ module Xanthus
     end
 
     def output_script machine, outputs
-      script = "vagrant plugin install vagrant-scp\n"
+      script = ''
       outputs.each do |name, path|
-        script += "vagrant scp :#{path} output/#{name}.data\n"
+        script += "cp -f #{path} output/#{name}.data\n"
       end
       return script
     end

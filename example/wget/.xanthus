@@ -172,6 +172,8 @@ while the attack behavior downloads the same series but one of the Debian packag
       sleep 10
       cd ..
       rm -rf wgets
+      cp -a /var/log/audit/. /vagrant/
+      cp -f /etc/auditd.conf /vagrant/auditd.conf
     }}
   end
 
@@ -215,30 +217,15 @@ while the attack behavior downloads the same series but one of the Debian packag
     vm.ip = '192.168.33.3'
   end
 
-  config.job :normal_camflow do |job|
-    job.iterations = 125
-    job.tasks = {camflow: [:pre, :camflow_start, :normal, :camflow_stop, :post]}
-    job.outputs = {camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
-  end
-
-  config.job :attack_camflow do |job|
-    job.iterations = 25
-    job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
-    job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit3.py']}
-    job.outputs = {server: {trace: '/tmp/wget.txt'}, camflow: {config: '/etc/camflow.ini', trace: '/tmp/audit.log'}}
-  end
-
-  config.job :normal_spade do |job|
-    job.iterations = 125
+  config.job :normal_wget do |job|
+    job.iterations = 1
     job.tasks = {spade: [:pre, :spade_start, :normal, :spade_stop, :post]}
-    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
 
-  config.job :attack_spade do |job|
-    job.iterations = 25
+  config.job :attack_wget do |job|
+    job.iterations = 1
     job.tasks = {server: [:server], spade: [:pre, :spade_start, :attack, :spade_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit3.py']}
-    job.outputs = {spade: {trace: '/tmp/audit_cdm.avro'}}
   end
 
   # config.dataverse do |dataverse|
