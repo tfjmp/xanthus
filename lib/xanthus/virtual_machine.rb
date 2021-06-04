@@ -40,6 +40,7 @@ Vagrant.configure(2) do |config|
   config.vm.box = "#{@box}"
   config.vm.box_version = "#{@version}"
   config.vm.network "private_network", ip: "#{@ip}"
+  config.vm.synced_folder ".", "/vagrant", create: true, owner: 'vagrant', disabled: false, type: 'virtualbox'
 }
 script += %Q{
 if Vagrant.has_plugin?("vagrant-vbguest")
@@ -47,7 +48,7 @@ if Vagrant.has_plugin?("vagrant-vbguest")
 end
 }
 script += %Q{
-  config.vm.synced_folder ".", "/vagrant", create: true, owner: 'vagrant', disabled: false, type: 'virtualbox'
+  config.vm.synced_folder ".", "/vagrant", disabled: false, type: 'rsync'
 } unless !@on_aws
 script += %Q{
   config.ssh.username = "#{@ssh_username}"
