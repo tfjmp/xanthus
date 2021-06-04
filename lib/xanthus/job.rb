@@ -22,7 +22,7 @@ module Xanthus
     def output_script machine, outputs
       script = ''
       outputs.each do |name, path|
-        script += "cp -f #{path} /vagrant/data/#{name}.data\n"
+        script += "cp -f #{path} /vagrant/output/#{name}.data\n"
       end
       return script
     end
