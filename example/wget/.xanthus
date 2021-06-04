@@ -22,16 +22,14 @@ while the attack behavior downloads the same series but one of the Debian packag
       sudo systemctl stop firewalld
       mkdir wgets
       cd wgets
+      sudo dpkg -P libssll1.2
+      sudo apt-get update && sudo apt-get install -f -y openjdk-11-jre
       sleep 5
     }}
   end
 
   config.script :camflow_start do
     Xanthus::CAMFLOW_START
-  end
-
-  config.script :spade_start do
-    Xanthus::SPADE_START
   end
 
   config.script :normal do
@@ -163,17 +161,13 @@ while the attack behavior downloads the same series but one of the Debian packag
     Xanthus::CAMFLOW_STOP
   end
 
-  config.script :spade_stop do
-    Xanthus::SPADE_STOP
-  end
-
   config.script :post do
     %q{%{
       sleep 10
       cd ..
       rm -rf wgets
-      cp -a /var/log/audit/. /vagrant/
-      cp -f /etc/auditd.conf /vagrant/auditd.conf
+      cp -a /tmp/audit.log /vagrant/
+      cp -f /etc/camflow.ini /vagrant/camflow.ini
     }}
   end
 
@@ -204,13 +198,6 @@ while the attack behavior downloads the same series but one of the Debian packag
     vm.ip = '192.168.33.8'
   end
 
-  config.vm :spade do |vm|
-    vm.box = 'michaelh/spade'
-    vm.memory = 8192
-    vm.version = '0.0.3'
-    vm.ip = '192.168.33.8'
-  end
-
   config.vm :server do |vm|
     vm.box = 'bento/ubuntu-18.04'
     vm.version = '201812.27.0'
@@ -219,19 +206,13 @@ while the attack behavior downloads the same series but one of the Debian packag
 
   config.job :normal_wget do |job|
     job.iterations = 1
-    job.tasks = {spade: [:pre, :spade_start, :normal, :spade_stop, :post]}
+    job.tasks = {camflow: [:pre, :camflow_start, :normal, :camflow_stop, :post]}
   end
 
   config.job :attack_wget do |job|
     job.iterations = 1
-    job.tasks = {server: [:server], spade: [:pre, :spade_start, :attack, :spade_stop, :post]}
+    job.tasks = {server: [:server], camflow: [:pre, :camflow_start, :attack, :camflow_stop, :post]}
     job.inputs = {server: ['ipscan_3.5.5_amd64.deb', 'wget-exploit3.py']}
   end
 
-  # config.dataverse do |dataverse|
-  #   dataverse.server = <ADD DATAVERSE BASE URL>
-  #   dataverse.repo = <PROVIDE DATAVERSE NAME>
-  #   dataverse.token = <PROVIDE DATAVERSE TOKEN>
-  #   dataverse.subject = <PROVIDE DATAVERSE SUBJECT (e.g. engineering)>
-  # end
 end
