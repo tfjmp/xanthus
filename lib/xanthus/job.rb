@@ -20,9 +20,9 @@ module Xanthus
     end
 
     def output_script machine, outputs
-      script = "vagrant plugin install vagrant-scp\n"
+      script = ''
       outputs.each do |name, path|
-        script += "vagrant scp :#{path} output/#{name}.data\n"
+        script += "cp -f #{path} /vagrant/output/#{name}.data\n"
       end
       return script
     end
@@ -42,11 +42,11 @@ module Xanthus
           f.write(config.vms[machine].to_vagrant)
         end
         script = Script.new(scripts, config).to_s
+        script += self.output_script(machine, @outputs[machine]) unless  @outputs[machine].nil?
         File.open('provision.sh', 'w+') do |f|
           f.write(script)
         end
         script = 'echo "nothing to do"'
-        script = self.output_script(machine, @outputs[machine]) unless  @outputs[machine].nil?
         File.open('before_halt.sh', 'w+') do |f|
           f.write(script)
         end
