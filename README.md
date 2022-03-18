@@ -51,7 +51,7 @@ This last step publishes the gem at [https://rubygems.org/gems/xanthus](https://
 
 ### Contribution
 
-We welcome bug reports and pull requests on GitHub at https://github.com/[USERNAME]/xanthus.
+We welcome bug reports and pull requests on [GitHub](https://github.com/tfjmp/xanthus).
 
 ### License
 
